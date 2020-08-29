@@ -138,14 +138,14 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/AdataCenter',
+    path: '/AaccountManage',
     component: Layout,
-    redirect: '/AdataCenter/index',
+    redirect: '/AaccountManage/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/AdataCenter/index'),
-        name: 'AdataCenter',
+        component: () => import('@/views/AaccountManage/index'),
+        name: 'AaccountManage',
         meta: { title: '账号管理', icon: 'user', noCache: true }
       }
     ]
@@ -272,7 +272,7 @@ export const asyncRoutes = [
         meta: { title: 'Clipboard', icon: 'clipboard' }
       }
     ]
-  },
+  }
   //
   // {
   //   path: 'external-link',
