@@ -54,7 +54,7 @@
               <div class="grid-disc">根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始</div>
             </div>
             <div style="margin-top: 40px" v-for="(item_0,index_0) in titleList0">
-              <div class="list-title">1.活动按期开始活动按期开始活动活开始</div>
+              <div class="list-title">{{index_0+1}}.活动按期开始活动按期开始活动活开始</div>
               <div class="list-desc">说明：这是第一条数据的说明</div>
               <div>
                 <div v-for="(item,index) in titleList" class="li-form">
