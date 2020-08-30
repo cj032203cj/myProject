@@ -68,7 +68,7 @@ export const constantRoutes = [
         path: 'dashboard',
         component: () => import('@/views/dashboard/index'),
         name: 'Dashboard',
-        meta: { title: 'Dashboard', icon: 'dashboard', affix: false }
+        meta: {title: 'Dashboard', icon: 'dashboard', affix: false}
       }
     ]
   },
@@ -80,7 +80,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/documentation/index'),
         name: 'Documentation',
-        meta: { title: 'Documentation', icon: 'documentation', affix: false }
+        meta: {title: 'Documentation', icon: 'documentation', affix: false}
       }
     ]
   },
@@ -94,7 +94,7 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/profile/index'),
         name: 'Profile',
-        meta: { title: 'Profile', icon: 'user', noCache: true }
+        meta: {title: 'Profile', icon: 'user', noCache: true}
       }
     ]
   },
@@ -107,33 +107,40 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/AdataCenter/index'),
         name: 'AdataCenter',
-        meta: { title: '数据中心', icon: 'table', noCache: true }
+        meta: {title: '数据中心', icon: 'table', noCache: true},
       }
     ]
   },
   {
-    path: '/AdataCenter',
+    path: '/AdataDetail',
+    hidden:true,
+    component: () => import('@/views/AdataDetail/detail'),
+    name: 'AdataDetail',
+    meta: {title: '模板详情', icon: 'table', noCache: true},
+  },
+  {
+    path: '/AtempAssign',
     component: Layout,
-    redirect: '/AdataCenter/index',
+    redirect: '/AtempAssign/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/AdataCenter/index'),
-        name: 'AdataCenter',
-        meta: { title: '模板分配', icon: 'clipboard', noCache: true }
+        component: () => import('@/views/AtempAssign/index'),
+        name: 'AtempAssign',
+        meta: {title: '模板分配', icon: 'clipboard', noCache: true}
       }
     ]
   },
   {
-    path: '/AdataCenter',
+    path: '/AtempManage',
     component: Layout,
-    redirect: '/AdataCenter/index',
+    redirect: '/AtempManage/index',
     children: [
       {
         path: 'index',
-        component: () => import('@/views/AdataCenter/index'),
-        name: 'AdataCenter',
-        meta: { title: '模板管理', icon: 'component', noCache: true }
+        component: () => import('@/views/AtempManage/index'),
+        name: 'AtempManage',
+        meta: {title: '模板管理', icon: 'component', noCache: true}
       }
     ]
   },
@@ -146,10 +153,23 @@ export const constantRoutes = [
         path: 'index',
         component: () => import('@/views/AaccountManage/index'),
         name: 'AaccountManage',
-        meta: { title: '账号管理', icon: 'user', noCache: true }
+        meta: {title: '账号管理', icon: 'user', noCache: true}
       }
     ]
-  }
+  },
+  {
+    path: '/AmyFill',
+    component: Layout,
+    redirect: '/AmyFill/index',
+    children: [
+      {
+        path: 'index',
+        component: () => import('@/views/AmyFill/index'),
+        name: 'AmyFill',
+        meta: {title: '我的填报', icon: 'edit', noCache: true}
+      }
+    ]
+  },
 ]
 
 /**
@@ -207,7 +227,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/icons/index'),
         name: 'Icons',
-        meta: { title: 'Icons', icon: 'icon', noCache: true }
+        meta: {title: 'Icons', icon: 'icon', noCache: true}
       }
     ]
   },
@@ -224,7 +244,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/tab/index'),
         name: 'Tab',
-        meta: { title: 'Tab', icon: 'tab' }
+        meta: {title: 'Tab', icon: 'tab'}
       }
     ]
   },
@@ -238,7 +258,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/pdf/index'),
         name: 'PDF',
-        meta: { title: 'PDF', icon: 'pdf' }
+        meta: {title: 'PDF', icon: 'pdf'}
       }
     ]
   },
@@ -256,7 +276,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/theme/index'),
         name: 'Theme',
-        meta: { title: 'Theme', icon: 'theme' }
+        meta: {title: 'Theme', icon: 'theme'}
       }
     ]
   },
@@ -269,7 +289,7 @@ export const asyncRoutes = [
         path: 'index',
         component: () => import('@/views/clipboard/index'),
         name: 'ClipboardDemo',
-        meta: { title: 'Clipboard', icon: 'clipboard' }
+        meta: {title: 'Clipboard', icon: 'clipboard'}
       }
     ]
   }
@@ -289,7 +309,7 @@ export const asyncRoutes = [
 
 const createRouter = () => new Router({
   // mode: 'history', // require service support
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({y: 0}),
   routes: constantRoutes
 })
 

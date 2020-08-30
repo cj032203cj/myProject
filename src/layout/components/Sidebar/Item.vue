@@ -27,7 +27,6 @@ export default {
     if (title) {
       vnodes.push(<div class="center" slot='title'>{(title)}</div>)
     }
-    console.log(vnodes)
     return vnodes
   }
 }

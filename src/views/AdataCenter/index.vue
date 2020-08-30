@@ -26,9 +26,18 @@
       style="width: 100%;"
     >
       <el-table-column prop="hostName" header-align="center" align="center" label="医院名称" />
-      <el-table-column prop="questName" header-align="center" align="center" label="调查表名称" />
+      <el-table-column prop="questName" header-align="center" align="center" label="调查表名称" >
+        <template slot-scope="scope">
+          <el-link @click="toDetail(scope.row.index)">{{scope.row.questName}}</el-link>
+        </template>
+      </el-table-column>
       <el-table-column prop="org" header-align="center" align="center" label="部门" />
-      <el-table-column prop="status" header-align="center" align="center" label="填报状态" />
+      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.status==0">已填报</div>
+          <div v-if="scope.row.status==1">未填报</div>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="startTime"
         header-align="center"
@@ -79,40 +88,40 @@ export default {
         {
           hostName: '广西自治区人民医院',
           questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+          org: '药学部',
+          status: '0',
           startTime: '2019-08-12 09:12:23',
           endTime: '2020-08-12 09:12:23'
         },
         {
           hostName: '广西自治区人民医院',
           questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+          org: '药学部',
+          status: '0',
           startTime: '2019-08-12 09:12:23',
           endTime: '2020-08-12 09:12:23'
         },
         {
           hostName: '广西自治区人民医院',
           questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+          org: '药学部',
+          status: '1',
           startTime: '2019-08-12 09:12:23',
           endTime: '2020-08-12 09:12:23'
         },
         {
           hostName: '广西自治区人民医院',
           questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+          org: '药学部',
+          status: '1',
           startTime: '2019-08-12 09:12:23',
           endTime: '2020-08-12 09:12:23'
         },
         {
           hostName: '广西自治区人民医院',
           questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-          status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+          org: '药学部',
+          status: '0',
           startTime: '2019-08-12 09:12:23',
           endTime: '2020-08-12 09:12:23'
         }
@@ -126,6 +135,15 @@ export default {
   methods: {
     getDataList() {
 
+    },
+    toDetail(){
+      let url = this.$router.resolve(
+        {
+          path:'/AdataDetail',
+          query: {id:'2'}
+        }
+      )
+      window.open(url.href,'_blank')
     },
     addOrUpdateHandle() {
 

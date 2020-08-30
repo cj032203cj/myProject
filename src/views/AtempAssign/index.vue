@@ -1,56 +1,149 @@
 <template>
-  <div class="app-container documentation-container">
-    <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/">Documentation</a>
-    <a class="document-btn" target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">Github Repository</a>
-    <a class="document-btn" target="_blank" href="https://panjiachen.gitee.io/vue-element-admin-site/zh/">国内文档</a>
-    <dropdown-menu class="document-btn" :items="articleList" title="系列文章" />
-    <a class="document-btn" target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/zh/job/">内推招聘</a>
+  <div class="app-container">
+    <div class="filter-container">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form-item>
+          <el-form-item label="模板内容：">
+            <el-input v-model="dataForm.name" placeholder="模板内容" />
+          </el-form-item>
+          <el-form-item label="部门：">
+            <el-input v-model="dataForm.name" placeholder="请输入部门" />
+          </el-form-item>
+        </el-form-item>
+        <el-form-item>
+          <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
+          <el-button type="primary" icon="el-icon-refresh-right" @click="getDataList()">重置</el-button>
+          <el-button type="primary" @click="getDataList()">新建</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+    <el-table
+      v-loading="dataListLoading"
+      :data="dataList"
+      border
+      style="width: 100%;"
+    >
+      <el-table-column prop="hostName" header-align="center" align="center" label="模板内容" />
+      <el-table-column prop="org" header-align="center" align="center" label="部门" />
+            <el-table-column header-align="center" align="center" width="150" label="操作">
+              <template slot-scope="scope">
+                <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row.advId)">分配</el-button>
+              </template>
+            </el-table-column>
+    </el-table>
+    <el-pagination
+      :current-page="pageIndex"
+      :page-sizes="[10, 20, 50, 100]"
+      :page-size="pageSize"
+      :total="totalPage"
+      style="margin-top: 20px"
+      layout="total, sizes, prev, pager, next, jumper"
+      @size-change="sizeChangeHandle"
+      @current-change="currentChangeHandle"
+    />
   </div>
 </template>
 
 <script>
-import DropdownMenu from '@/components/Share/DropdownMenu'
+  import DropdownMenu from '@/components/Share/DropdownMenu'
 
-export default {
-  name: 'AtempAssign',
-  components: { DropdownMenu },
-  data() {
-    return {
-      articleList: [
-        { title: '基础篇', href: 'https://juejin.im/post/59097cd7a22b9d0065fb61d2' },
-        { title: '登录权限篇', href: 'https://juejin.im/post/591aa14f570c35006961acac' },
-        { title: '实战篇', href: 'https://juejin.im/post/593121aa0ce4630057f70d35' },
-        { title: 'vue-admin-template 篇', href: 'https://juejin.im/post/595b4d776fb9a06bbe7dba56' },
-        { title: 'v4.0 篇', href: 'https://juejin.im/post/5c92ff94f265da6128275a85' },
-        { title: '自行封装 component', href: 'https://segmentfault.com/a/1190000009090836' },
-        { title: '优雅的使用 icon', href: 'https://juejin.im/post/59bb864b5188257e7a427c09' },
-        { title: 'webpack4（上）', href: 'https://juejin.im/post/59bb864b5188257e7a427c09' },
-        { title: 'webpack4（下）', href: 'https://juejin.im/post/5b5d6d6f6fb9a04fea58aabc' }
-      ]
+  export default {
+    name: 'AtempAssign',
+    components: { DropdownMenu },
+    data() {
+      return {
+        dataForm: {
+          key: ''
+        },
+        dataList: [
+          {
+            hostName: '广西自治区人民医院',
+            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            startTime: '2019-08-12 09:12:23',
+            endTime: '2020-08-12 09:12:23'
+          },
+          {
+            hostName: '广西自治区人民医院',
+            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            startTime: '2019-08-12 09:12:23',
+            endTime: '2020-08-12 09:12:23'
+          },
+          {
+            hostName: '广西自治区人民医院',
+            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            startTime: '2019-08-12 09:12:23',
+            endTime: '2020-08-12 09:12:23'
+          },
+          {
+            hostName: '广西自治区人民医院',
+            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            startTime: '2019-08-12 09:12:23',
+            endTime: '2020-08-12 09:12:23'
+          },
+          {
+            hostName: '广西自治区人民医院',
+            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
+            startTime: '2019-08-12 09:12:23',
+            endTime: '2020-08-12 09:12:23'
+          }
+        ],
+        pageIndex: 1,
+        pageSize: 10,
+        totalPage: 0,
+        dataListLoading: false
+      }
+    },
+    methods: {
+      getDataList() {
+
+      },
+      addOrUpdateHandle() {
+
+      },
+      // 每页数
+      sizeChangeHandle(val) {
+        this.pageSize = val
+        this.pageIndex = 1
+        this.getDataList()
+      },
+      // 当前页
+      currentChangeHandle(val) {
+        this.pageIndex = val
+        this.getDataList()
+      }
     }
   }
-}
 </script>
 
 <style lang="scss" scoped>
-.documentation-container {
-  margin: 50px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
+  .documentation-container {
+    margin: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
 
-  .document-btn {
-    flex-shrink: 0;
-    display: block;
-    cursor: pointer;
-    background: black;
-    color: white;
-    height: 60px;
-    width: 200px;
-    margin-bottom: 16px;
-    line-height: 60px;
-    font-size: 20px;
-    text-align: center;
+    .document-btn {
+      flex-shrink: 0;
+      display: block;
+      cursor: pointer;
+      background: black;
+      color: white;
+      height: 60px;
+      width: 200px;
+      margin-bottom: 16px;
+      line-height: 60px;
+      font-size: 20px;
+      text-align: center;
+    }
   }
-}
 </style>
