@@ -47,11 +47,25 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="16">
-            <div class="grid-title">关于填报国家医疗服务质量与安全报告抽样调查</div>
-            <div class="grid-org">药水部</div>
-            <div class="grid-disc">根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始</div>
-          </el-col>
+          <el-col :span="16" class="right-info-box">
+            <div>
+              <div class="grid-title">关于填报国家医疗服务质量与安全报告抽样调查</div>
+              <div class="grid-org">药水部</div>
+              <div class="grid-disc">根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始</div>
+            </div>
+            <div style="margin-top: 40px" v-for="(item_0,index_0) in titleList0">
+              <div class="list-title">1.活动按期开始活动按期开始活动活开始</div>
+              <div class="list-desc">说明：这是第一条数据的说明</div>
+              <div>
+                <div v-for="(item,index) in titleList" class="li-form">
+                  <div>实际开放床数</div>
+                  <div class="li-forminfo">
+                    <el-input style="width: 120px"></el-input>
+                  </div>
+                </div>
+              </div>
+            </div>
+           </el-col>
         </el-row>
       </div>
 
@@ -63,6 +77,8 @@
       name: "AdataDetail",
       data(){
         return{
+          titleList0:[{},{}],
+          titleList:[{},{},{},{},{},{},],
           chose_index:-1,
           reverse: true,
           activities: [{
@@ -152,7 +168,24 @@
         .grid-disc{
           text-indent: 36px;
           line-height: 24px;
-          font-size: 12px;
+          font-size: 18px;
+        }
+        .list-desc{
+          margin-top: 16px;
+          color: #ccc;
+          font-size: 18px;
+          text-indent: 18px;
+          margin-bottom: 40px;
+        }
+        .li-form{
+          margin-bottom: 32px;
+        }
+        .li-forminfo{
+          margin-top: 16px;
+        }
+        .right-info-box{
+          height: calc(100vh - 80px);
+          overflow: auto;
         }
       }
     }
