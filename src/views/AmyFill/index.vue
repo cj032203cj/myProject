@@ -68,7 +68,7 @@
 import DropdownMenu from '@/components/Share/DropdownMenu'
 
 export default {
-  name: 'AdataCenter',
+  name: 'AmyFill',
   components: { DropdownMenu },
   data() {
     return {

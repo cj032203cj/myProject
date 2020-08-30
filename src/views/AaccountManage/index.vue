@@ -51,7 +51,7 @@
 import DropdownMenu from '@/components/Share/DropdownMenu'
 
 export default {
-  name: 'Documentation',
+  name: 'AaccountManage',
   components: { DropdownMenu },
   data() {
     return {
