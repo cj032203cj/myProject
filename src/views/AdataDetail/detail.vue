@@ -47,7 +47,11 @@
               </div>
             </div>
           </el-col>
-          <el-col :span="16"><div class="grid-content bg-purple-light">2</div></el-col>
+          <el-col :span="16">
+            <div class="grid-title">关于填报国家医疗服务质量与安全报告抽样调查</div>
+            <div class="grid-org">药水部</div>
+            <div class="grid-disc">根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始</div>
+          </el-col>
         </el-row>
       </div>
 
@@ -124,16 +128,31 @@
       .grid-center-row{
         height: 800px;
         .left-title{
-          font-size: 12px;
+          font-size: 14px;
           font-weight: bold;
           width: 160px;
           line-height: 20px;
-          margin-top: 120px;
+          margin-top: 130px;
           .left-list{
             width: 100%;
             margin-top: 24px;
             border-top: 1px solid #E9EEF2;
           }
+        }
+        .grid-title{
+          margin-top: 40px;
+          margin-bottom: 32px;
+          font-weight: bold;
+          text-align: center;
+        }
+        .grid-org{
+          margin-bottom: 24px;
+          text-align: center;
+        }
+        .grid-disc{
+          text-indent: 36px;
+          line-height: 24px;
+          font-size: 12px;
         }
       }
     }
