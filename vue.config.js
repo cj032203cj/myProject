@@ -24,12 +24,20 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
+
   publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
+    proxy: {
+      [process.env.VUE_APP_BASE_API2]:{
+        target: "http://121.36.230.98:7001/",
+        changeOrigin:true,
+        ws:true
+      }
+    },
     port: port,
     open: true,
     overlay: {
