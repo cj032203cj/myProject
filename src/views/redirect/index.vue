@@ -1,7 +1,6 @@
 <script>
 export default {
   created() {
-    debugger
     const { params, query } = this.$route
     console.log(params,query)
     const { path } = params

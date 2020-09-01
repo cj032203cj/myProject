@@ -21,17 +21,9 @@
       <el-row class="grid-center-row">
         <el-col :span="8">
           <div class="left-title">
-            <div>关于填报国家医疗服务质量与安全报告抽样调查</div>
+            <div>{{titleObject.title_all}}</div>
             <div class="left-list">
-              <!--                <el-steps direction="vertical" space="50px" :active="1">-->
-              <!--                  <el-step description="这是一段很长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step description="这是一段很长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step  description="这是一段很321312长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step  description="这是一段很13213长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step  description="这是一段很长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step  description="这是一段很13123长很长很长的描述性文字"></el-step>-->
-              <!--                  <el-step  description="这是一段很长很长很长的描述性文字"></el-step>-->
-              <!--                </el-steps>-->
+
               <el-timeline style="padding-left: 0;margin-top: 20px">
                 <el-timeline-item
                   style="cursor: pointer"
@@ -49,17 +41,17 @@
         </el-col>
         <el-col :span="16" class="right-info-box">
           <div>
-            <div class="grid-title">关于填报国家医疗服务质量与安全报告抽样调查</div>
-            <div class="grid-org">药水部</div>
+            <div class="grid-title">{{titleObject.title_all}}</div>
+            <div class="grid-org">{{titleObject.title_org}}</div>
             <div class="grid-disc">
               根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始
             </div>
           </div>
-          <div style="margin-top: 40px" v-for="(item_0,index_0) in titleList0">
+          <div style="margin-top: 40px" v-for="(item_0,index_0) in titleObject.subjectList">
             <div class="list-title">{{index_0+1}}.活动按期开始活动按期开始活动活开始</div>
-            <div class="list-desc" v-for="(item,index) in 5" :key="index">{{index+1}}.这是第{{index+1}}条数据的说明</div>
+            <div class="list-desc" v-for="(item,index) in 5" :key="index">{{index+1}}.{{item_0.subjDesc}}</div>
             <div>
-              <div v-for="(item,index) in titleList" class="li-form">
+              <div v-for="(item,index) in item_0.subjListChild" class="li-form">
                 <div>实际开放床数</div>
                 <div class="li-forminfo">
                   <template v-if="item.type==0">
@@ -98,14 +90,126 @@
     name: "AdataDetail",
     data() {
       return {
-        radio: 3,
-        checkList: ["复选框 A", "复选框 B"],
+          radio: -1,
+        checkList: [],
         titleList0: [{}, {}],
         titleObject:{
           title_all:'关于填报国家医疗服务质量与安全报告抽样调查',
           title_org:'药水部',
           title_desc:'总说明',
           subjectList:[
+            {
+              subjTitle:'1.这是第一道大题',
+              subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',
+              subjListChild: [
+                {
+                  id:"FDS234324FDSF",
+                  type: 0,
+                  value:'这是存放input答案的位置',
+                  list:[]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 1,
+                  value:'这是存放单选答案的位置',
+                  list:[
+                    {
+                      label:"是",
+                      value:1
+                    },
+                    {
+                      label:"否",
+                      value:0
+                    },
+                  ]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 2,
+                  value:'这是存放多选框答案的位置',
+                  list:[
+                    {
+                      label:"答案1",
+                      value:0
+                    },
+                    {
+                      label:"答案2",
+                      value:2
+                    },
+                    {
+                      label:"答案3",
+                      value:3
+                    },
+                    {
+                      label:"答案4",
+                      value:4
+                    },
+                  ]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 3,
+                  value:'这是存放简单题答案的位置',
+                  list:[]
+                },
+              ],
+            },
+            {
+              subjTitle:'1.这是第一道大题',
+              subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',
+              subjListChild: [
+                {
+                  id:"FDS234324FDSF",
+                  type: 0,
+                  value:'这是存放input答案的位置',
+                  list:[]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 2,
+                  value:'这是存放单选答案的位置',
+                  list:[
+                    {
+                      label:"是",
+                      value:1
+                    },
+                    {
+                      label:"否",
+                      value:0
+                    },
+                  ]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 3,
+                  value:'这是存放多选框答案的位置',
+                  list:[
+                    {
+                      label:"答案1",
+                      value:0
+                    },
+                    {
+                      label:"答案2",
+                      value:2
+                    },
+                    {
+                      label:"答案3",
+                      value:3
+                    },
+                    {
+                      label:"答案4",
+                      value:4
+                    },
+                  ]
+                },
+                {
+                  id:"FDS234324FDSF",
+                  type: 4,
+                  value:'这是存放简单题答案的位置',
+                  list:[]
+                },
+              ],
+            },
             {
               subjTitle:'1.这是第一道大题',
               subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',

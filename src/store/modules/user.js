@@ -1,6 +1,6 @@
 import { login, logout, getInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-import router, { resetRouter } from '@/router'
+import router, { resetRouter,constantRoutes } from '@/router'
 
 const state = {
   token: getToken(),
@@ -41,6 +41,14 @@ const actions = {
         }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
+        commit('SET_ROLES',  [
+          {
+            key: 'admin',
+            name: 'admin',
+            description: 'Super Administrator. Have access to view all pages.',
+            routes: constantRoutes
+          }
+        ])
         setToken(data.token)
         resolve(response)
       }).catch(error => {
@@ -51,30 +59,30 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        const { data } = response
-
-        if (!data) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { roles, name, avatar, introduction } = data
-
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
-    })
+    // return new Promise((resolve, reject) => {
+    //   getInfo(state.token).then(response => {
+    //     const { data } = response
+    //
+    //     if (!data) {
+    //       reject('Verification failed, please Login again.')
+    //     }
+    //
+    //     const { roles, name, avatar, introduction } = data
+    //
+    //     // roles must be a non-empty array
+    //     if (!roles || roles.length <= 0) {
+    //       reject('getInfo: roles must be a non-null array!')
+    //     }
+    //
+    //     commit('SET_ROLES', roles)
+    //     commit('SET_NAME', name)
+    //     commit('SET_AVATAR', avatar)
+    //     commit('SET_INTRODUCTION', introduction)
+    //     resolve(data)
+    //   }).catch(error => {
+    //     reject(error)
+    //   })
+    // })
   },
 
   // user logout
