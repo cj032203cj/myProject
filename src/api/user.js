@@ -2,8 +2,8 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/uestMgrService/centreData',
-    method: 'get',
+    url: '/questMgrService/centreData',
+    method: 'post',
     data
   })
 }
