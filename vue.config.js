@@ -31,20 +31,20 @@ module.exports = {
   lintOnSave: false,
   productionSourceMap: false,
   devServer: {
-    proxy: {
-      [process.env.VUE_APP_BASE_API2]:{
-        target: "http://121.36.230.98:7001/",
-        changeOrigin:true,
-        ws:true
-      }
-    },
     port: port,
     open: true,
     overlay: {
       warnings: false,
       errors: true
     },
-    before: require('./mock/mock-server.js')
+    proxy: {
+      [process.env.VUE_APP_BASE_API]:{
+        target: "http://121.36.230.98:7001/",
+        changeOrigin:true,
+        ws:true
+      }
+    },
+    // before: require('./mock/mock-server.js')
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that
