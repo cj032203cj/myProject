@@ -33,11 +33,16 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({
+        requestData: {
+          login_name: username.trim(),
+          login_pwd: password.trim()
+        }
+        }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
@@ -75,17 +80,19 @@ const actions = {
   // user logout
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout({
+        requestData: {
+        }
+      }).then((response) => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
         resetRouter()
-
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
         dispatch('tagsView/delAllViews', null, { root: true })
 
-        resolve()
+        resolve(response)
       }).catch(error => {
         reject(error)
       })
