@@ -2,12 +2,12 @@ import request from '@/utils/request'
 
 export function login(data) {
   return request({
-    url: '/questMgrService/centreData',
+    url: '/accountService/doLogin',
     method: 'post',
     data
   })
 }
-
+// POST /apis/accountService/doLogin
 export function getInfo(token) {
   return request({
     url: '/vue-element-admin/user/info',
@@ -16,9 +16,10 @@ export function getInfo(token) {
   })
 }
 
-export function logout() {
+export function logout(data) {
   return request({
-    url: '/vue-element-admin/user/logout',
-    method: 'post'
+    url: '/accountService/loginOut',
+    method: 'post',
+    data
   })
 }

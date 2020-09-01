@@ -46,9 +46,9 @@ service.interceptors.response.use(
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
-    if (res.returnCode !== 20000) {
+    if (res.returnCode != 0) {
       Message({
-        message: res.message || 'Error',
+        message: res.returnMsg || '接口出现错误',
         type: 'error',
         duration: 5 * 1000
       })
