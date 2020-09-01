@@ -4,15 +4,15 @@
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item>
           <el-form-item label="模板内容：">
-            <el-input v-model="dataForm.name" placeholder="模板内容" />
+            <el-input v-model="dataForm.title" placeholder="模板内容" />
           </el-form-item>
           <el-form-item label="部门：">
-            <el-input v-model="dataForm.name" placeholder="请输入部门" />
+            <el-input v-model="dataForm.dept_name" placeholder="请输入部门" />
           </el-form-item>
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="getDataList()">重置</el-button>
+          <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -22,13 +22,11 @@
       border
       style="width: 100%;"
     >
-      <el-table-column prop="hostName" header-align="center" align="center" label="模板内容" />
-      <el-table-column prop="questName" header-align="center" align="center" label="创建时间" />
-      <el-table-column prop="org" header-align="center" align="center" label="部门" />
-      <el-table-column prop="status" header-align="center" align="center" label="已分配医院" />
+      <el-table-column prop="title" header-align="center" align="center" label="模板内容" />
+      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row.advId)">分配</el-button>
+          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row.advId)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -46,70 +44,64 @@
 </template>
 
 <script>
-  import DropdownMenu from '@/components/Share/DropdownMenu'
+  import {tempQuery} from '@/api/AdataCenter'
 
   export default {
     name: 'AtempManage',
-    components: { DropdownMenu },
     data() {
       return {
         dataForm: {
-          key: ''
+          title: '',
+          dept_name:''
         },
+        rules:{
+          etime:[
+            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+          ]},
         dataList: [
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          }
         ],
         pageIndex: 1,
         pageSize: 10,
         totalPage: 0,
-        dataListLoading: false
+        dataListLoading: false,
       }
     },
+    mounted() {
+      this.getDataList()
+    },
     methods: {
+      reset(){
+        this.dataForm= {
+          title: '',
+          dept_name:''
+        }
+        this.pageIndex=1
+        this.pageSize=10
+        this.totalPage=0
+        this.getDataList()
+      },
       getDataList() {
-
+        let that = this
+        tempQuery({
+          requestData: {
+            curPage: this.pageIndex,
+            dept_name: this.dataForm.dept_name,
+            title: this.dataForm.title,
+            pageSize: this.pageSize,
+          },
+        }).then(res => {
+          that.dataList=res.data.pageData
+          that.totalPage=res.data.totalSize
+        })
       },
       addOrUpdateHandle() {
-
+        let url = this.$router.resolve(
+          {
+            path:'/AdataDetail',
+            query: {id:'2'}
+          }
+        )
+        window.open(url.href,'_blank')
       },
       // 每页数
       sizeChangeHandle(val) {

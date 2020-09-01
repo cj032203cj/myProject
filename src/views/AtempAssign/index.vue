@@ -131,7 +131,6 @@
 
       },
       confirmHttp(){
-
         doPublish({
           requestData: {
             "etime": moment(this.form.etime).format("YYYY-DD-MM HH:MM:SS"),
@@ -148,10 +147,8 @@
         })
       },
       addOrUpdateHandle(data){
-        debugger
-        console.log(data.etime)
         this.form={
-          etime:data.etime,
+          etime:data.etime?new Date(data.etime):'',
           value: []
         }
         this.publish_id = data.id

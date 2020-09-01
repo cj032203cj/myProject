@@ -28,3 +28,17 @@ export function doPublish(data) {
     data
   })
 }
+export function tempQuery(data) {
+  return request({
+    url: '/tempService/query',
+    method: 'post',
+    data
+  })
+}
+export function orgQuery(data) {
+  return request({
+    url: '/orgService/query',
+    method: 'post',
+    data
+  })
+}
