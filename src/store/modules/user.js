@@ -41,14 +41,7 @@ const actions = {
         }).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
-        commit('SET_ROLES',  [
-          {
-            key: 'admin',
-            name: 'admin',
-            description: 'Super Administrator. Have access to view all pages.',
-            routes: constantRoutes
-          }
-        ])
+        commit('SET_ROLES', [data.orginfo])
         setToken(data.token)
         resolve(response)
       }).catch(error => {

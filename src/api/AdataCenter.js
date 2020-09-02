@@ -42,3 +42,34 @@ export function orgQuery(data) {
     data
   })
 }
+export function addOrg(data) {
+  return request({
+    url: '/orgService/addOrg',
+    method: 'post',
+    data
+  })
+}
+export function updateOrg(data) {
+  return request({
+    url: '/orgService/updateOrg',
+    method: 'post',
+    data
+  })
+}
+export function myQuest(data) {
+  return request({
+    url: '/questMgrService/myQuest',
+    method: 'post',
+    data
+  })
+}
+export function questPreview(data) {
+  return request({
+    url: '/questMgrService/questPreview',
+    method: 'post',
+    data
+  })
+}
+
+
+

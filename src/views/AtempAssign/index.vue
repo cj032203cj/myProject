@@ -147,6 +147,8 @@
         })
       },
       addOrUpdateHandle(data){
+        new Date(data.etime)
+        console.log(data.etime)
         this.form={
           etime:data.etime?new Date(data.etime):'',
           value: []

@@ -86,6 +86,8 @@
 </template>
 
 <script>
+  import { questPreview } from '@/api/AdataCenter'
+
   export default {
     name: "AdataDetail",
     data() {
@@ -284,7 +286,23 @@
         }]
       }
     },
+    mounted() {
+      this.getDataList()
+    },
     methods: {
+      getDataList(){
+        questPreview({
+          requestData: {
+            curPage: this.pageIndex,
+            dept_name: this.dataForm.dept_name,
+            title: this.dataForm.title,
+            pageSize: this.pageSize,
+          },
+        }).then(res => {
+          that.dataList=res.data.pageData
+          that.totalPage=res.data.totalSize
+        })
+      },
       chose_activity(item, index) {
         this.chose_index = index
         this.activities.forEach(item => {

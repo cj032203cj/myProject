@@ -4,10 +4,10 @@
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item>
           <el-form-item label="模板内容：">
-            <el-input v-model="dataForm.name" placeholder="请输入模板内容" />
+            <el-input v-model="dataForm.title" placeholder="请输入模板内容" />
           </el-form-item>
           <el-form-item label="部门：">
-            <el-input v-model="dataForm.name" placeholder="请输入部门" />
+            <el-input v-model="dataForm.dept_name" placeholder="请输入部门" />
           </el-form-item>
         </el-form-item>
         <el-form-item>
@@ -22,19 +22,24 @@
       border
       style="width: 100%;"
     >
-      <el-table-column prop="hostName" header-align="center" align="center" label="我的调查表" />
-      <el-table-column prop="org" header-align="center" align="center" label="部门" />
-      <el-table-column prop="status" header-align="center" align="center" label="填报状态" />
+      <el-table-column prop="title" header-align="center" align="center" label="我的调查表" />
+      <el-table-column prop="dept_name " header-align="center" align="center" label="部门" />
+      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
+        <template slot-scope="scope">
+          <div v-if="scope.row.status==1">未提交</div>
+          <div v-if="scope.row.status==2">已提交</div>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="startTime"
+        prop="etime"
         header-align="center"
         align="center"
         width="180"
         label="截至日期"
       />
-      <el-table-column prop="status" header-align="center" align="center" label="完成度" >
-        <template>
-          <el-progress :percentage="50"></el-progress>
+      <el-table-column prop="percentage " header-align="center" align="center" label="完成度" >
+        <template slot-scope="scope">
+          <el-progress :percentage="scope.row.percentage"></el-progress>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
@@ -58,57 +63,18 @@
 </template>
 
 <script>
-  import DropdownMenu from '@/components/Share/DropdownMenu'
+  import {myQuest}from '@/api/AdataCenter'
 
   export default {
     name: 'AmyFill',
-    components: { DropdownMenu },
     data() {
       return {
         dataForm: {
-          key: ''
+          title:'',
+          dept_name:'',
         },
         dataList: [
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          },
-          {
-            hostName: '广西自治区人民医院',
-            questName: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            org: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            status: '关于填报国家医疗服务质量与安全报告抽样调查表',
-            startTime: '2019-08-12 09:12:23',
-            endTime: '2020-08-12 09:12:23'
-          }
+
         ],
         pageIndex: 1,
         pageSize: 10,
@@ -116,9 +82,24 @@
         dataListLoading: false
       }
     },
+    mounted() {
+      this.getDataList()
+    },
     methods: {
       getDataList() {
-
+        myQuest({
+          requestData: {
+            org_id:this.$store.getters.roles[0].id,
+            curPage: this.pageIndex,
+            title: this.dataForm.title,
+            pageSize: this.pageSize,
+            org_name:'',
+            dept_name: this.dataForm.dept_name,
+          },
+        }).then(res => {
+          this.dataList=res.data.pageData
+          this.totalPage=res.data.totalSize
+        })
       },
       addOrUpdateHandle() {
 

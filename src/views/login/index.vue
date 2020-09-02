@@ -87,8 +87,8 @@ export default {
         password: 'admin'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        username: [{ required: true, trigger: 'blur', message: '请输入用戶名' }],
+        password: [{ required: true, trigger: 'blur', message: '请输入密码' }]
       },
       passwordType: 'password',
       capsTooltip: false,
@@ -153,7 +153,7 @@ export default {
               this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
               this.loading = false
             })
-            .catch(() => {
+            .catch((res) => {
               this.loading = false
             })
         } else {
