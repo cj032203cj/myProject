@@ -28,7 +28,7 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="share(scope.row)">分享</el-button>
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row)">编辑</el-button>
-          <el-button type="text" size="small" @click="del(scope.row.advId)">删除</el-button>
+          <el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
           <!--          <span class="el-dropdown-links"></span>-->
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
@@ -82,7 +82,7 @@
 </template>
 
 <script>
-import {orgQuery,addOrg,updateOrg} from '@/api/AdataCenter'
+import {orgQuery,addOrg,updateOrg,deleteOrgById} from '@/api/AdataCenter'
 import Clipboard from 'clipboard'
 export default {
   name: 'AaccountManage',
@@ -150,22 +150,33 @@ export default {
         this.totalPage=res.data.totalSize
       })
     },
-    del(){
+    del(data){
       this.$confirm('是否进行删除？', '确认信息', {
         distinguishCancelAndClose: true,
         confirmButtonText: '是',
         cancelButtonText: '否'
       }).then(() => {
-        alert('是')
+        this.deleteOrgById(data.id)
       }).catch(action => {
-        alert('否')
       });
+    },
+    deleteOrgById(data){
+      deleteOrgById({
+        requestData: data,
+      }).then(res => {
+        this.$message({
+          message: res.returnMsg,
+          type: 'success'
+        })
+        this.dialogFormVisible=false
+        this.getDataList()
+      })
     },
     addOrUpdateHandle(data) {
       if(data){
         this.form={
           login_name:data.login_name,
-          org_name:data.login_name,
+          org_name:data.org_name,
           phone_num:data.phone_num,
           contact_name:data.contact_name,
           role_id:data.role_id,

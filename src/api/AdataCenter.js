@@ -51,7 +51,14 @@ export function addOrg(data) {
 }
 export function updateOrg(data) {
   return request({
-    url: '/orgService/updateOrg',
+    url: '/orgService/updOrg',
+    method: 'post',
+    data
+  })
+}
+export function deleteOrgById(data) {
+  return request({
+    url: '/orgService/deleteOrgById',
     method: 'post',
     data
   })
@@ -73,6 +80,13 @@ export function questPreview(data) {
 export function savePreview(data) {
   return request({
     url: '/questMgrService/questSubmit',
+    method: 'post',
+    data
+  })
+}
+export function tempPreview(data) {
+  return request({
+    url: '/tempService/tempPreview',
     method: 'post',
     data
   })

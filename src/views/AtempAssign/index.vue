@@ -30,7 +30,7 @@
       <el-table-column prop="distunm" header-align="center" align="center" label="已分配的医院(家)" >
         <template slot-scope="scope">
           {{scope.row.distunm}}
-          <el-tooltip class="item" effect="dark" content="广西自治区医院" placement="top-start">
+          <el-tooltip class="item" effect="dark" :content="scope.row.contentName" placement="top-start">
             <i class="el-icon-info"></i>
         </el-tooltip>
         </template>
@@ -147,28 +147,33 @@
         })
       },
       addOrUpdateHandle(data){
-        new Date(data.etime)
-        console.log(data.etime)
         this.form={
           etime:data.etime?new Date(data.etime):'',
           value: []
         }
         this.publish_id = data.id
         this.dialogFormVisible=true
-        this.questHspFn()
+        this.questHspFn(data.contentId)
       },
-      questHspFn(){
+      questHspFn(data){
         let that = this
         that.data=[]
         questHsp({
           requestData: {
           },
         }).then(res => {
+          console.log(data)
           res.data.pageData.forEach((item, index) => {
             const the_data={}
-            the_data.label=item.org_name
-            the_data.key=item.id
-            that.data.push(the_data)
+              the_data.label=item.org_name
+              the_data.key=item.id
+              that.data.push(the_data)
+            if(data.indexOf(item.id)!=-1){
+            }else{
+              the_data.label=item.org_name
+              the_data.key=item.id
+              that.form.value.push(item.id)
+            }
           });
         })
       },
@@ -191,6 +196,20 @@
             pageSize: this.pageSize,
           },
         }).then(res => {
+          res.data.pageData.forEach(item=>{
+            if(item.orgList!=null&&item.orgList.length>0){
+              let contentName=[]
+              let contentId=[]
+              item.orgList.forEach(item_1=>{
+                if(item_1.status==2){
+                  contentName.push(item_1.org_name)
+                  contentId.push(item_1.org_id)
+                }
+              })
+              item.contentName=contentName.toString()
+              item.contentId=contentId
+            }
+          })
           this.dataList=res.data.pageData
           this.totalPage=res.data.totalSize
         })

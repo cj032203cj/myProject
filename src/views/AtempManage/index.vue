@@ -26,7 +26,7 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row.advId)">查看</el-button>
+          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -93,15 +93,17 @@
           this.totalPage=res.data.totalSize
         })
       },
-      addOrUpdateHandle() {
+      addOrUpdateHandle(data) {
         let url = this.$router.resolve(
           {
             path:'/AdataDetail',
-            query: {id:'2'}
+            query: {
+              "temp_id": data.id}
           }
         )
         window.open(url.href,'_blank')
       },
+
       // 每页数
       sizeChangeHandle(val) {
         this.pageSize = val

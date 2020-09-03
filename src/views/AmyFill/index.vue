@@ -44,7 +44,7 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row.advId)">去填报</el-button>
+          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row)">去填报</el-button>
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
       </el-table-column>
@@ -101,8 +101,19 @@
           this.totalPage=res.data.totalSize
         })
       },
-      addOrUpdateHandle() {
-
+      addOrUpdateHandle(data){
+        let url = this.$router.resolve(
+          {
+            path:'/AdataDetail',
+            query: {
+              "org_id": data.org_id,
+              "que_id":  data.que_id,
+              "temp_id":  data.temp_id,
+              edit:1
+            }
+          }
+        )
+        window.open(url.href,'_blank')
       },
       // 每页数
       sizeChangeHandle(val) {

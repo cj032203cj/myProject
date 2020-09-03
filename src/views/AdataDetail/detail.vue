@@ -6,13 +6,14 @@
           <el-col :span="8">
             <div style="visibility: hidden">none</div>
           </el-col>
-          <el-col :span="8" class="middle-text" style="">
-            <div>提交日期：2020-08-12 19：00</div>
+          <el-col  :span="8" class="middle-text" style="">
+            <div v-if="!requestDataId">提交日期：2020-08-12 19：00</div>
+            <div v-else style="visibility: hidden">none</div>
           </el-col>
           <el-col :span="7" class="right-text">
             <div>
-              <el-button icon="el-icon-printer" type="primary" size="small">打印</el-button>
-              <el-button type="primary" size="small" style="margin-left: 20px" @click="answer">提交</el-button>
+              <el-button icon="el-icon-printer" v-if="requestDataId" type="primary" size="small">打印</el-button>
+              <el-button type="primary" size="small" v-else-if="!requestDataId&&edit==1" style="margin-left: 20px" @click="answer" >提交</el-button>
             </div>
           </el-col>
         </el-row>
@@ -20,7 +21,7 @@
     </div>
     <div class="grid-center">
       <el-row class="grid-center-row">
-        <el-col :span="8">
+        <el-col :span="8" v-if="!requestDataId">
           <div class="left-title">
             <div>{{dataObject.title}}</div>
             <div class="left-list">
@@ -40,7 +41,7 @@
             </div>
           </div>
         </el-col>
-        <el-col :span="16" class="right-info-box">
+        <el-col :span="requestDataId?24:16" class="right-info-box">
           <div>
             <div class="grid-title">{{dataObject.title}}</div>
             <div class="grid-org">{{dataObject.dept_name}}</div>
@@ -67,7 +68,7 @@
                   </template>
                   <template v-if="item_2.type==2">
                     <el-checkbox-group v-model="item_2.answer">
-                      <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_3 in item_2.subjItems" :label="item_3.id" :key="item_3.id">{{item_3.title}}</el-checkbox>
+                      <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems" :label="item_4.id" :key="item_4.title">{{item_4.title}}</el-checkbox>
                     </el-checkbox-group>
                   </template>
                   <template v-if="item_2.type==4">
@@ -85,7 +86,7 @@
 </template>
 
 <script>
-  import { questPreview ,savePreview} from '@/api/AdataCenter'
+  import { questPreview ,savePreview,tempPreview} from '@/api/AdataCenter'
 
   export default {
     name: "AdataDetail",
@@ -96,7 +97,9 @@
         chose_index: -1,
         reverse: true,
         requestData:{},
+        requestDataId:'',
         dataObject:{},
+        edit:0,
         activities: [{
           content: '1.活动按期开始活动按期开始活动活开始',
           color: '#B5B5B5'
@@ -116,6 +119,11 @@
           "que_id":  this.$route.query.que_id,
           "temp_id":  this.$route.query.temp_id
         }
+      }else{
+        this.requestDataId=this.$route.query.temp_id
+      }
+      if(this.$route.query.edit){
+        this.edit=this.$route.query.edit
       }
       this.getDataList()
     },
@@ -125,13 +133,24 @@
         this.dataObject.subjList.forEach(item=>{
           if(item.subjmxList){
             item.subjmxList.forEach(item_1=>{
-              const data={}
               if(item_1.answer){
-                data.answer=item_1.answer
-                data.answerid=item_1.answerid
-                data.subjmx_id=item_1.id
-                answerList.push(data)
+                const data={}
+                if(item_1.type==2){
+                  if(item_1.answer.length>0){
+                    data.answer=item_1.answer.toString()
+                    data.answerid=item_1.answerid
+                    data.subjmx_id=item_1.id
+                    answerList.push(data)
+                  }
+                }else{
+                  data.answer=item_1.answer
+                  data.answerid=item_1.answerid
+                  data.subjmx_id=item_1.id
+                  answerList.push(data)
+                }
+
               }
+
             })
           }
         })
@@ -158,42 +177,75 @@
 
       },
       getDataList(){
-        questPreview({
-          requestData: this.requestData,
-        }).then(res => {
-          res.data.subjList.forEach(item=>{
-            let desc=[]
-            if(item.desc){
-              desc=item.desc.split('&&')
-            }
-            item.desc=desc
-            if(item.subjmxList) {
-              item.subjmxList.forEach(item_1 => {
-                if(item_1.type == 2){
-                  if(item_1.answer){
+        if(this.requestDataId){
+          tempPreview({
+            requestData: this.requestDataId,
+          }).then(res => {
+            res.data.subjList.forEach(item=>{
+              let desc=[]
+              if(item.desc){
+                desc=item.desc.split('&&')
+              }
+              item.desc=desc
+              if(item.subjmxList) {
+                item.subjmxList.forEach(item_1 => {
+                  if(item_1.type == 2){
+                    if(item_1.answer){
+                      item_1.answer=item_1.answer.split(',').map(Number)
 
-                  }else{
-                    item_1.answer=[]
+                    }else{
+                      item_1.answer=[]
+                    }
                   }
-                }
-                if (item_1.answer) {
-                  if (item_1.type == 1 || item_1.type == 2) {
-                    item_1.answer = parseInt(item_1.answer)
+                  if (item_1.answer) {
+                    if (item_1.type == 1) {
+                      item_1.answer = parseInt(item_1.answer)
+                    }
                   }
-                }
-              })
-            }
+                })
+              }
+            })
+            this.dataObject=res.data
           })
-          this.dataObject=res.data
-        })
+        }else{
+          questPreview({
+            requestData: this.requestData,
+          }).then(res => {
+            res.data.subjList.forEach(item=>{
+              let desc=[]
+              if(item.desc){
+                desc=item.desc.split('&&')
+              }
+              item.desc=desc
+              if(item.subjmxList) {
+                item.subjmxList.forEach(item_1 => {
+                  if(item_1.type == 2){
+                    if(item_1.answer){
+                      item_1.answer=item_1.answer.split(',').map(Number)
+
+                    }else{
+                      item_1.answer=[]
+                    }
+                  }
+                  if (item_1.answer) {
+                    if (item_1.type == 1) {
+                      item_1.answer = parseInt(item_1.answer)
+                    }
+                  }
+                })
+              }
+            })
+            this.dataObject=res.data
+          })
+        }
+
       },
       chose_activity(item, index) {
         this.chose_index = index
-        this.activities.forEach(item => {
+        this.dataObject.subjList.forEach(item => {
           item.color = '#B5B5B5'
         })
-        this.activities[index].color = '#2375FE'
-        console.log(this.activities)
+        this.dataObject.subjList[index].color = '#2375FE'
       }
     }
   }
@@ -263,6 +315,7 @@
 
         .grid-title {
           margin-top: 40px;
+          font-size: 20px;
           margin-bottom: 32px;
           font-weight: bold;
           text-align: center;

@@ -131,7 +131,7 @@ export default {
           query: {
             "org_id": data.org_id,
             "que_id":  data.que_id,
-            "temp_id":  data.temp_id
+            "temp_id":  data.temp_id,
           }
         }
       )
