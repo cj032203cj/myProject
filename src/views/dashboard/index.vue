@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <component :is="currentRole" />
+    <!--<component :is="currentRole" />-->
+    首页
   </div>
 </template>
 

@@ -42,6 +42,8 @@ const actions = {
         const { data } = response
         commit('SET_TOKEN', data.token)
         commit('SET_ROLES', [data.orginfo])
+        // localStorage.setItem('role',data.orginfo)JSON.stringify(applyGood)
+        localStorage.setItem('role',JSON.stringify(data.orginfo))
         setToken(data.token)
         resolve(response)
       }).catch(error => {
@@ -52,30 +54,30 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    // return new Promise((resolve, reject) => {
-    //   getInfo(state.token).then(response => {
-    //     const { data } = response
-    //
-    //     if (!data) {
-    //       reject('Verification failed, please Login again.')
-    //     }
-    //
-    //     const { roles, name, avatar, introduction } = data
-    //
-    //     // roles must be a non-empty array
-    //     if (!roles || roles.length <= 0) {
-    //       reject('getInfo: roles must be a non-null array!')
-    //     }
-    //
-    //     commit('SET_ROLES', roles)
-    //     commit('SET_NAME', name)
-    //     commit('SET_AVATAR', avatar)
-    //     commit('SET_INTRODUCTION', introduction)
-    //     resolve(data)
-    //   }).catch(error => {
-    //     reject(error)
-    //   })
-    // })
+    return new Promise((resolve, reject) => {
+      // getInfo(state.token).then(response => {
+        const data  = {
+          avatar: "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif",
+          introduction: "I am a super administrator",
+          name: "Super Admin",
+          roles: ["admin"]
+        }
+        if (!data) {
+          reject('Verification failed, please Login again.')
+        }
+        const { roles, name, avatar, introduction } = data
+        // roles must be a non-empty array
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
+
+        commit('SET_ROLES', roles)
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', avatar)
+        commit('SET_INTRODUCTION', introduction)
+        resolve(data)
+
+    })
   },
 
   // user logout
@@ -88,6 +90,7 @@ const actions = {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
         removeToken()
+        localStorage.removeItem('role')
         resetRouter()
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485

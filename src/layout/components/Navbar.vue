@@ -20,7 +20,7 @@
 
       <el-dropdown class="avatar-container right-menu-item hover-effect" trigger="click">
         <div class="avatar-wrapper">
-          <div style="font-size: 14px;font-weight: bold">{{roles[0].role_name}}</div>
+          <div style="font-size: 14px;font-weight: bold">{{userInfo.login_name}}</div>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
@@ -55,6 +55,11 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 
 export default {
+  data(){
+    return{
+      userInfo:{}
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger,
@@ -71,6 +76,10 @@ export default {
       'roles'
     ]),
 
+  },
+  mounted(){
+    this.userInfo=JSON.parse(localStorage.getItem('role'))
+    console.log(this.userInfo)
   },
   methods: {
     toggleSideBar() {
