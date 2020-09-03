@@ -196,3 +196,9 @@ aside {
   height: 40px !important;
   line-height: 40px;
 }
+.hideSidebar .el-menu a{
+  height: 54px !important;
+}
+#app .hideSidebar .submenu-title-noDropdown .el-tooltip .svg-icon{
+  margin-left: 0 !important;
+}
