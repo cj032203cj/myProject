@@ -7,7 +7,7 @@
             <div style="visibility: hidden">none</div>
           </el-col>
           <el-col  :span="8" class="middle-text" style="">
-            <div v-if="!requestDataId">提交日期：2020-08-12 19：00</div>
+            <div v-if="!requestDataId">提交日期：{{dataObject.etime }}</div>
             <div v-else style="visibility: hidden">none</div>
           </el-col>
           <el-col :span="7" class="right-text">

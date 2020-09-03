@@ -89,7 +89,7 @@
       getDataList() {
         myQuest({
           requestData: {
-            org_id:this.$store.getters.roles[0].id,
+            org_id:JSON.parse(localStorage.getItem('role')).id,
             curPage: this.pageIndex,
             title: this.dataForm.title,
             pageSize: this.pageSize,
