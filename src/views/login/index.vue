@@ -46,6 +46,7 @@
       </el-tooltip>
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登 陆</el-button>
+      <div>忘记密码</div>
 
     </el-form>
 
