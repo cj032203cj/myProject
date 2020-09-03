@@ -1,9 +1,17 @@
 <template>
   <div class="login-container">
+    <div class="login-left"></div>
+    <div class="company-center">
+      <div>医疗服务质控中心系统</div>
+      <div class="en-name">Medical service quality control center system</div>
+    </div>
+    <div class="company-name">
+      瑞思云（武汉）科技有限公司
+    </div>
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
-
       <div class="title-container">
-        <h3 class="title">质控管理中心</h3>
+        <div class="title">登录系统</div>
+        <div class="title-line"></div>
       </div>
 
       <el-form-item prop="username">
@@ -11,9 +19,10 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
+          class="input-style"
           ref="username"
           v-model="loginForm.username"
-          placeholder="Username"
+          placeholder="请输入用户名"
           name="username"
           type="text"
           tabindex="1"
@@ -31,7 +40,7 @@
             ref="password"
             v-model="loginForm.password"
             :type="passwordType"
-            placeholder="Password"
+            placeholder="请输入密码"
             name="password"
             tabindex="2"
             autocomplete="on"
@@ -44,10 +53,9 @@
           </span>
         </el-form-item>
       </el-tooltip>
-
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登 陆</el-button>
-      <div>忘记密码</div>
-
+      <div class="forget-pas">忘记密码</div>
+      <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登 录</el-button>
+      <div class="sm-rsy"></div>
     </el-form>
 
     <el-dialog title="Or connect with" :visible.sync="showDialog">
@@ -211,30 +219,25 @@ $cursor: #fff;
 .login-container {
   .el-input {
     display: inline-block;
-    height: 47px;
-    width: 85%;
+    height: 56px;
+    width: 326px;
 
     input {
-      background: transparent;
-      border: 0px;
-      -webkit-appearance: none;
+      background: #fff;
+      background: #fff;
       border-radius: 0px;
       padding: 12px 5px 12px 15px;
-      color: $light_gray;
-      height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
+      height: 56px;
+      color: #000;
+      border: none;
     }
   }
 
   .el-form-item {
     border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+
+    border: 2px solid #E3E8F1;
+    background: #F4F6F8;
     color: #454545;
   }
 }
@@ -246,17 +249,51 @@ $dark_gray:#889aa4;
 $light_gray:#eee;
 
 .login-container {
-  min-height: 100%;
+  position: relative;
+  height: 100%;
   width: 100%;
-  background-color: $bg;
+  background: url("../../assets/imgs/bg.png") left top no-repeat;
+  background-size: cover;
   overflow: hidden;
+  .login-left{
+    position: absolute;
+    left: 48px;
+    top: 24px;
+    width: 120px;
+    height: 40px;
+    background: url("../../assets/imgs/rsyBig.png") left top no-repeat;
+    background-size: cover;
+  }
+  .company-center{
+    position: absolute;
+    left: 84px;
+    top: 416px;
 
+    color: #D8E5FE;
+    font-size: 36px;
+    .en-name{
+      margin-top: 24px;
+      font-size: 18px;
+    }
+  }
+
+  .company-name{
+    text-align: center;
+    position: absolute;
+    bottom: 26px;
+    left: 0;
+    font-size: 12px;
+    width: 100%;
+    color: #788295;
+    }
   .login-form {
     position: relative;
-    width: 520px;
+    width: 480px;
+    height: 100%;
+    background: #fff;
     max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    padding: 220px 54px 0;
+    float: right;
     overflow: hidden;
   }
 
@@ -273,22 +310,53 @@ $light_gray:#eee;
   }
 
   .svg-container {
-    padding: 6px 5px 6px 15px;
+    height: 56px;
+    line-height: 56px;
+    text-align: center;
     color: $dark_gray;
     vertical-align: middle;
-    width: 30px;
+    width: 42px;
+    border-right: 2px solid #E3E8F1;
     display: inline-block;
   }
-
+  .forget-pas{
+    text-align: right;
+    font-size: 14px;
+    margin-top: 30px;
+    margin-bottom: 64px;
+    color: #3B86FD;
+  }
+  .sm-rsy{
+    width: 72px;
+    height: 24px;
+    margin: 50px auto 0;
+    background: url("../../assets/imgs/rsy.png") left top no-repeat;
+    background-size: cover;}
+  .login-btn{
+    height: 60px;
+    width: 100%;
+    font-size: 20px;
+  }
   .title-container {
     position: relative;
 
     .title {
       font-size: 26px;
-      color: $light_gray;
-      margin: 0px auto 40px auto;
-      text-align: center;
+      color: #000;
+      margin: 0px  auto;
+      text-align: left;
       font-weight: bold;
+    }
+    .title-line{
+      width: 80px;
+      height: 4px;
+      background: #3B86FD;
+      margin-top: 16px;
+      margin-bottom: 72px;
+    }
+    .input-style{
+      border: 2px solid #E3E8F1;
+      background: #fff;
     }
   }
 
