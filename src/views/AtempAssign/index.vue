@@ -183,7 +183,6 @@
         this.getDataList()
       },
       getDataList() {
-        let that = this
         questDistList({
           requestData: {
             curPage: this.pageIndex,
@@ -192,8 +191,8 @@
             pageSize: this.pageSize,
           },
         }).then(res => {
-          that.dataList=res.data.pageData
-          that.totalPage=res.data.totalSize
+          this.dataList=res.data.pageData
+          this.totalPage=res.data.totalSize
         })
       },
 

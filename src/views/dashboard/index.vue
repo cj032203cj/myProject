@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
     <!--<component :is="currentRole" />-->
-    首页
+    质控中心
   </div>
 </template>
 
@@ -30,3 +30,12 @@ export default {
   }
 }
 </script>
+<style>
+  .dashboard-container{
+    width: 100%;
+    height:calc( 100vh - 85px);
+    line-height: calc( 100vh - 85px );
+    text-align: center;
+    font-size: 24px;
+  }
+</style>

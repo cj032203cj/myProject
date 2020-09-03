@@ -139,7 +139,6 @@ export default {
       this.getDataList()
     },
     getDataList() {
-      let that = this
       orgQuery({
         requestData: {
           curPage: this.pageIndex,
@@ -147,8 +146,8 @@ export default {
           pageSize: this.pageSize,
         },
       }).then(res => {
-        that.dataList=res.data.pageData
-        that.totalPage=res.data.totalSize
+        this.dataList=res.data.pageData
+        this.totalPage=res.data.totalSize
       })
     },
     del(){

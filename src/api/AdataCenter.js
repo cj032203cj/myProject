@@ -70,6 +70,12 @@ export function questPreview(data) {
     data
   })
 }
-
+export function savePreview(data) {
+  return request({
+    url: '/questMgrService/questSubmit',
+    method: 'post',
+    data
+  })
+}
 
 

@@ -11,7 +11,8 @@
           </el-col>
           <el-col :span="7" class="right-text">
             <div>
-              <el-button icon="el-icon-printer" type="primary" size="small" round>打印</el-button>
+              <el-button icon="el-icon-printer" type="primary" size="small">打印</el-button>
+              <el-button type="primary" size="small" style="margin-left: 20px" @click="answer">提交</el-button>
             </div>
           </el-col>
         </el-row>
@@ -21,18 +22,18 @@
       <el-row class="grid-center-row">
         <el-col :span="8">
           <div class="left-title">
-            <div>{{titleObject.title_all}}</div>
+            <div>{{dataObject.title}}</div>
             <div class="left-list">
 
               <el-timeline style="padding-left: 0;margin-top: 20px">
                 <el-timeline-item
                   style="cursor: pointer"
-                  v-for="(activity, index) in activities"
+                  v-for="(activity, index) in dataObject.subjList"
                   :key="index"
                   :color="activity.color"
                   :timestamp="activity.timestamp">
                   <div @click="chose_activity(activity,index)" :class="{active_color:index==chose_index}">
-                    {{activity.content}}
+                    <a :href="'#herf_'+activity.id">{{activity.title}}</a>
                   </div>
                 </el-timeline-item>
               </el-timeline>
@@ -41,38 +42,36 @@
         </el-col>
         <el-col :span="16" class="right-info-box">
           <div>
-            <div class="grid-title">{{titleObject.title_all}}</div>
-            <div class="grid-org">{{titleObject.title_org}}</div>
+            <div class="grid-title">{{dataObject.title}}</div>
+            <div class="grid-org">{{dataObject.dept_name}}</div>
             <div class="grid-disc">
-              根据国家微生物发乎大数据的斯柯达斯柯达拉萨扩大了大苏打萨达萨达萨达撒旦·大撒大撒大苏打撒旦活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始活动按期开始活动按期开始活动活开始
+              {{dataObject.que_desc}}
             </div>
           </div>
-          <div style="margin-top: 40px" v-for="(item_0,index_0) in titleObject.subjectList">
-            <div class="list-title">{{index_0+1}}.活动按期开始活动按期开始活动活开始</div>
-            <div class="list-desc" v-for="(item,index) in 5" :key="index">{{index+1}}.{{item_0.subjDesc}}</div>
+          <div style="margin-top: 40px" v-for="(item_0,index_0) in dataObject.subjList">
+            <div class="list-title" :id="'herf_'+item_0.id">{{item_0.title}}</div>
+            <ul>
+              <li class="list-desc" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
+            </ul>
             <div>
-              <div v-for="(item,index) in item_0.subjListChild" class="li-form">
-                <div>实际开放床数</div>
+              <div v-for="(item_2,index_2) in item_0.subjmxList" :key="index_2" class="li-form">
+                <div>{{item_2.title}}</div>
                 <div class="li-forminfo">
-                  <template v-if="item.type==0">
-                    <el-input style="width: 120px"></el-input>
+                  <template v-if="item_2.type==3">
+                    <el-input style="width: 120px" v-model="item_2.answer"></el-input>
                   </template>
-                  <template v-if="item.type==1">
-                    <el-radio-group v-model="radio">
-                      <el-radio :label="3">备选项</el-radio>
-                      <el-radio :label="6">备选项</el-radio>
-                      <el-radio :label="9">备选项</el-radio>
+                  <template v-if="item_2.type==1">
+                    <el-radio-group v-model="item_2.answer">
+                      <el-radio v-for="item_3 in item_2.subjItems" :label="item_3.id" class="mr-20">{{item_3.title}}</el-radio>
                     </el-radio-group>
                   </template>
-                  <template v-if="item.type==2">
-                    <el-checkbox-group v-model="checkList">
-                      <el-checkbox label="复选框 A"></el-checkbox>
-                      <el-checkbox label="复选框 B"></el-checkbox>
-                      <el-checkbox label="复选框 C"></el-checkbox>
+                  <template v-if="item_2.type==2">
+                    <el-checkbox-group v-model="item_2.answer">
+                      <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_3 in item_2.subjItems" :label="item_3.id" :key="item_3.id">{{item_3.title}}</el-checkbox>
                     </el-checkbox-group>
                   </template>
-                  <template v-if="item.type==3">
-                    <el-input style="width: 360px" type="textarea"></el-input>
+                  <template v-if="item_2.type==4">
+                    <el-input style="width: 360px" type="textarea" v-model="item_2.answer"></el-input>
                   </template>
                 </div>
               </div>
@@ -86,7 +85,7 @@
 </template>
 
 <script>
-  import { questPreview } from '@/api/AdataCenter'
+  import { questPreview ,savePreview} from '@/api/AdataCenter'
 
   export default {
     name: "AdataDetail",
@@ -94,186 +93,10 @@
       return {
           radio: -1,
         checkList: [],
-        titleList0: [{}, {}],
-        titleObject:{
-          title_all:'关于填报国家医疗服务质量与安全报告抽样调查',
-          title_org:'药水部',
-          title_desc:'总说明',
-          subjectList:[
-            {
-              subjTitle:'1.这是第一道大题',
-              subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',
-              subjListChild: [
-                {
-                  id:"FDS234324FDSF",
-                  type: 0,
-                  value:'这是存放input答案的位置',
-                  list:[]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 1,
-                  value:'这是存放单选答案的位置',
-                  list:[
-                    {
-                      label:"是",
-                      value:1
-                    },
-                    {
-                      label:"否",
-                      value:0
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 2,
-                  value:'这是存放多选框答案的位置',
-                  list:[
-                    {
-                      label:"答案1",
-                      value:0
-                    },
-                    {
-                      label:"答案2",
-                      value:2
-                    },
-                    {
-                      label:"答案3",
-                      value:3
-                    },
-                    {
-                      label:"答案4",
-                      value:4
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 3,
-                  value:'这是存放简单题答案的位置',
-                  list:[]
-                },
-              ],
-            },
-            {
-              subjTitle:'1.这是第一道大题',
-              subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',
-              subjListChild: [
-                {
-                  id:"FDS234324FDSF",
-                  type: 0,
-                  value:'这是存放input答案的位置',
-                  list:[]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 2,
-                  value:'这是存放单选答案的位置',
-                  list:[
-                    {
-                      label:"是",
-                      value:1
-                    },
-                    {
-                      label:"否",
-                      value:0
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 3,
-                  value:'这是存放多选框答案的位置',
-                  list:[
-                    {
-                      label:"答案1",
-                      value:0
-                    },
-                    {
-                      label:"答案2",
-                      value:2
-                    },
-                    {
-                      label:"答案3",
-                      value:3
-                    },
-                    {
-                      label:"答案4",
-                      value:4
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 4,
-                  value:'这是存放简单题答案的位置',
-                  list:[]
-                },
-              ],
-            },
-            {
-              subjTitle:'1.这是第一道大题',
-              subjDesc:'说明1XMB说明2XMB说明3XMB说明4XMB',
-              subjListChild: [
-                {
-                  id:"FDS234324FDSF",
-                  type: 0,
-                  value:'这是存放input答案的位置',
-                  list:[]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 2,
-                  value:'这是存放单选答案的位置',
-                  list:[
-                    {
-                      label:"是",
-                      value:1
-                    },
-                    {
-                      label:"否",
-                      value:0
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 3,
-                  value:'这是存放多选框答案的位置',
-                  list:[
-                    {
-                      label:"答案1",
-                      value:0
-                    },
-                    {
-                      label:"答案2",
-                      value:2
-                    },
-                    {
-                      label:"答案3",
-                      value:3
-                    },
-                    {
-                      label:"答案4",
-                      value:4
-                    },
-                  ]
-                },
-                {
-                  id:"FDS234324FDSF",
-                  type: 4,
-                  value:'这是存放简单题答案的位置',
-                  list:[]
-                },
-              ],
-            }
-          ],
-
-        },
-
         chose_index: -1,
         reverse: true,
+        requestData:{},
+        dataObject:{},
         activities: [{
           content: '1.活动按期开始活动按期开始活动活开始',
           color: '#B5B5B5'
@@ -287,20 +110,81 @@
       }
     },
     mounted() {
+      if(this.$route.query.org_id){
+        this.requestData={
+          "org_id": this.$route.query.org_id,
+          "que_id":  this.$route.query.que_id,
+          "temp_id":  this.$route.query.temp_id
+        }
+      }
       this.getDataList()
     },
     methods: {
+      answer(){
+        let answerList=[]
+        this.dataObject.subjList.forEach(item=>{
+          if(item.subjmxList){
+            item.subjmxList.forEach(item_1=>{
+              const data={}
+              if(item_1.answer){
+                data.answer=item_1.answer
+                data.answerid=item_1.answerid
+                data.subjmx_id=item_1.id
+                answerList.push(data)
+              }
+            })
+          }
+        })
+        if(answerList.length>0){
+          savePreview({
+            requestData:{
+              answerList:answerList,
+              org_id:this.$route.query.org_id,
+              publish_id:this.$route.query.que_id,
+            } ,
+          }).then(res => {
+            this.$message({
+              message: res.returnMsg,
+              type: 'success'
+            })
+            this.getDataList()
+          })
+        }else{
+          this.$message({
+            message: '至少填写一个答案',
+            type: 'error'
+          })
+        }
+
+      },
       getDataList(){
         questPreview({
-          requestData: {
-            curPage: this.pageIndex,
-            dept_name: this.dataForm.dept_name,
-            title: this.dataForm.title,
-            pageSize: this.pageSize,
-          },
+          requestData: this.requestData,
         }).then(res => {
-          that.dataList=res.data.pageData
-          that.totalPage=res.data.totalSize
+          res.data.subjList.forEach(item=>{
+            let desc=[]
+            if(item.desc){
+              desc=item.desc.split('&&')
+            }
+            item.desc=desc
+            if(item.subjmxList) {
+              item.subjmxList.forEach(item_1 => {
+                if(item_1.type == 2){
+                  if(item_1.answer){
+
+                  }else{
+                    item_1.answer=[]
+                  }
+                }
+                if (item_1.answer) {
+                  if (item_1.type == 1 || item_1.type == 2) {
+                    item_1.answer = parseInt(item_1.answer)
+                  }
+                }
+              })
+            }
+          })
+          this.dataObject=res.data
         })
       },
       chose_activity(item, index) {
@@ -320,21 +204,24 @@
     height: 100vh;
     width: 100vw;
     background: #fff;
-    overflow: hidden;
-
+    /*overflow: hidden;*/
+    .mr-20{
+      margin-right: 20px;
+    }
     .top-header {
       height: 80px;
       width: 100%;
       position: fixed;
+      z-index: 2000;
       background: #fff;
       top: 0;
       left: 0px;
 
       .top-info {
-        width: calc(100vw - 240px);
+        width: 1200px;
         background: #EBF1FE;
         height: 80px;
-        margin: 0 120px;
+        margin: 0 auto;
 
         .middle-text {
           text-align: center;
@@ -352,12 +239,13 @@
     }
 
     .grid-center {
-      margin: 0 120px;
+      width: 1200px;
+      margin: 0 auto;
       margin-top: 80px;
-      height: calc(100vh - 80px);
+      /*height: calc(100vh - 80px);*/
 
       .grid-center-row {
-        height: 800px;
+        /*height: 800px;*/
 
         .left-title {
           font-size: 14px;
@@ -390,13 +278,16 @@
           line-height: 24px;
           font-size: 18px;
         }
-
+        .list-title{
+          font-weight: bold;
+        }
         .list-desc {
           margin-top: 16px;
           color: #ccc;
           font-size: 18px;
           text-indent: 18px;
-          margin-bottom: 40px;
+          margin-bottom: 30px;
+          list-style-type: disc;
         }
 
         .li-form {
@@ -408,8 +299,8 @@
         }
 
         .right-info-box {
-          height: calc(100vh - 80px);
-          overflow: auto;
+          /*height: 1600px;*/
+          /*overflow: auto;*/
         }
       }
     }

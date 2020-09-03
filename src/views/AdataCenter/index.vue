@@ -28,7 +28,7 @@
       <el-table-column prop="org_name" header-align="center" align="center" label="医院名称" />
       <el-table-column prop="title" width="300px" header-align="center" align="center" label="调查表名称" >
         <template slot-scope="scope">
-          <el-link @click="toDetail(scope.row.index)">{{scope.row.title}}</el-link>
+          <el-link @click="toDetail(scope.row)">{{scope.row.title}}</el-link>
         </template>
       </el-table-column>
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
@@ -111,7 +111,6 @@ export default {
       this.getDataList()
     },
     getDataList() {
-      let that = this
       getDataCenter({
         requestData: {
          curPage: this.pageIndex,
@@ -121,15 +120,19 @@ export default {
          pageSize: this.pageSize,
         },
     }).then(res => {
-        that.dataList=res.data.pageData
-        that.totalPage=res.data.totalSize
+        this.dataList=res.data.pageData
+        this.totalPage=res.data.totalSize
       })
     },
-    toDetail(){
+    toDetail(data){
       let url = this.$router.resolve(
         {
           path:'/AdataDetail',
-          query: {id:'2'}
+          query: {
+            "org_id": data.org_id,
+            "que_id":  data.que_id,
+            "temp_id":  data.temp_id
+          }
         }
       )
       window.open(url.href,'_blank')
