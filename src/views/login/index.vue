@@ -8,12 +8,11 @@
     <div class="company-name">
       瑞思云（武汉）科技有限公司
     </div>
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="loginForm" v-if="isLogin"  :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
       <div class="title-container">
-        <div class="title">登录系统</div>
-        <div class="title-line"></div>
+          <div class="title">登录系统</div>
+          <div class="title-line"></div>
       </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -29,7 +28,6 @@
           autocomplete="on"
         />
       </el-form-item>
-
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
         <el-form-item prop="password">
           <span class="svg-container">
@@ -53,11 +51,59 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <div class="forget-pas">忘记密码</div>
+      <div class="forget-pas" @click="isLogin=false">忘记密码</div>
       <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登 录</el-button>
       <div class="sm-rsy"></div>
     </el-form>
-
+    <el-form ref="loginForm" v-else :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+      <div class="title-container disFlex">
+        <div>
+          <div class="title">忘记密码</div>
+          <div class="title-line bg-fff"></div>
+        </div>
+        <el-link class="back_up" @click="isLogin=true">返回上一步</el-link>
+      </div>
+      <el-form-item prop="username">
+        <span class="svg-container">
+          <svg-icon icon-class="user" />
+        </span>
+        <el-input
+          class="input-style"
+          ref="username"
+          v-model="loginForm.username"
+          placeholder="请输入11位手机号"
+          name="username"
+          type="text"
+          tabindex="1"
+          autocomplete="on"
+        />
+      </el-form-item>
+      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+        <el-form-item prop="password">
+          <span class="svg-container">
+            <svg-icon icon-class="password" />
+          </span>
+          <el-input
+            :key="passwordType"
+            ref="password"
+            v-model="loginForm.password"
+            :type="passwordType"
+            placeholder="请输入密码"
+            name="password"
+            tabindex="2"
+            autocomplete="on"
+            @keyup.native="checkCapslock"
+            @blur="capsTooltip = false"
+            @keyup.enter.native="handleLogin"
+          />
+          <span class="show-pwd" @click="showPwd">
+            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+          </span>
+        </el-form-item>
+      </el-tooltip>
+      <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登 录</el-button>
+      <div class="sm-rsy"></div>
+    </el-form>
     <el-dialog title="Or connect with" :visible.sync="showDialog">
       Can not be simulated on local, so please combine you own business simulation! ! !
       <br>
@@ -91,6 +137,7 @@ export default {
       }
     }
     return {
+      isLogin:true,
       loginForm: {
         username: 'admin',
         password: 'admin'
@@ -326,6 +373,7 @@ $light_gray:#eee;
     margin-top: 30px;
     margin-bottom: 64px;
     color: #3B86FD;
+    cursor: pointer;
   }
   .sm-rsy{
     width: 72px;
@@ -340,7 +388,14 @@ $light_gray:#eee;
   }
   .title-container {
     position: relative;
-
+    &.disFlex{
+      justify-content: space-between;
+      .back_up{
+        color: #1890ff;
+        height: 26px;
+        line-height: 26px;
+      }
+    }
     .title {
       font-size: 26px;
       color: #000;
@@ -354,6 +409,9 @@ $light_gray:#eee;
       background: #3B86FD;
       margin-top: 16px;
       margin-bottom: 72px;
+      &.bg-fff{
+        background: #fff;
+      }
     }
     .input-style{
       border: 2px solid #E3E8F1;
