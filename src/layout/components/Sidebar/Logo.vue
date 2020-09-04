@@ -2,12 +2,12 @@
   <div class="sidebar-logo-container" :class="{'collapse':collapse}">
     <transition name="sidebarLogoFade">
       <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <img v-if="logo" :src="require('../../../assets/imgs/userLogo.png')" class="sidebar-logo">
         <!--<h1 v-else class="sidebar-title">{{ title }} </h1>-->
         <!--<h1 class="sidebar-title">{{ title }} </h1>-->
       </router-link>
       <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
+        <img v-if="logo" :src="require('../../../assets/imgs/userLogo.png')" class="sidebar-logo">
         <!--<h1 class="sidebar-title">{{ title }} </h1>-->
       </router-link>
     </transition>
@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       title: '医疗信息质控中心',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      logo: '../../../assets/imgs/userLogo.png'
     }
   }
 }
@@ -45,8 +45,8 @@ export default {
 .sidebar-logo-container {
   position: relative;
   width: 100%;
-  height: 50px;
-  line-height: 50px;
+  height: 60px;
+  line-height: 60px;
   background: #2b2f3a;
   text-align: center;
   overflow: hidden;

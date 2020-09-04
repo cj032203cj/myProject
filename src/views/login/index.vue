@@ -220,7 +220,7 @@ $cursor: #fff;
   .el-input {
     display: inline-block;
     height: 56px;
-    width: 326px;
+    width: 312px;
 
     input {
       background: #fff;
@@ -291,8 +291,9 @@ $light_gray:#eee;
     width: 480px;
     height: 100%;
     background: #fff;
+
     max-width: 100%;
-    padding: 220px 54px 0;
+    padding: 5% 54px 0;
     float: right;
     overflow: hidden;
   }
@@ -315,7 +316,7 @@ $light_gray:#eee;
     text-align: center;
     color: $dark_gray;
     vertical-align: middle;
-    width: 42px;
+    width: 56px;
     border-right: 2px solid #E3E8F1;
     display: inline-block;
   }

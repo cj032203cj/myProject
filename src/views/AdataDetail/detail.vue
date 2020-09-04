@@ -7,13 +7,15 @@
             <div style="visibility: hidden">none</div>
           </el-col>
           <el-col  :span="8" class="middle-text" style="">
-            <div v-if="!requestDataId">提交日期：{{dataObject.etime }}</div>
-            <div v-else style="visibility: hidden">none</div>
+            <div v-if="!requestDataId" class="div1">填报截止日期：{{dataObject.etime }}</div>
+            <div v-if="!requestDataId" class="div2">剩余填报时间：{{dataObject.etime }}</div>
           </el-col>
           <el-col :span="7" class="right-text">
             <div>
-              <el-button icon="el-icon-printer" v-if="requestDataId" type="primary" size="small">打印</el-button>
-              <el-button type="primary" size="small" v-else-if="!requestDataId&&edit==1" style="margin-left: 20px" @click="answer" >提交</el-button>
+              <el-button v-if="edit" type="info" @click="back" size="small">返回</el-button>
+              <el-button icon="el-icon-share" type="primary" size="small" style="margin-left: 20px" >分配</el-button>
+              <el-button icon="el-icon-printer" type="primary" size="small" style="margin-left: 20px" >打印</el-button>
+              <el-button type="primary" size="small" v-if="!requestDataId&&edit==1" style="margin-left: 20px" @click="answer" >提交</el-button>
             </div>
           </el-col>
         </el-row>
@@ -34,7 +36,7 @@
                   :color="activity.color"
                   :timestamp="activity.timestamp">
                   <div @click="chose_activity(activity,index)" :class="{active_color:index==chose_index}">
-                    <a :href="'#herf_'+activity.id">{{activity.title}}</a>
+                    <a :href="'#herf_'+activity.id" class="herf_a">{{activity.title}}</a>
                   </div>
                 </el-timeline-item>
               </el-timeline>
@@ -92,7 +94,7 @@
     name: "AdataDetail",
     data() {
       return {
-          radio: -1,
+        radio: -1,
         checkList: [],
         chose_index: -1,
         reverse: true,
@@ -128,7 +130,11 @@
       this.getDataList()
     },
     methods: {
+      back(){
+        this.$router.go(-1)
+      },
       answer(){
+        let that = this
         let answerList=[]
         this.dataObject.subjList.forEach(item=>{
           if(item.subjmxList){
@@ -166,7 +172,10 @@
               message: res.returnMsg,
               type: 'success'
             })
-            this.getDataList()
+            setTimeout(function () {
+              that.$router.go(-1)
+
+            },500)
           })
         }else{
           this.$message({
@@ -277,8 +286,15 @@
 
         .middle-text {
           text-align: center;
-          line-height: 80px;
           color: #1F72FA;
+          font-size: 16px;
+          .div1{
+            height: 50px;
+            line-height: 60px;
+          }
+          .div2{
+            line-height: 10px;
+          }
         }
 
         .right-text {
@@ -302,7 +318,7 @@
         .left-title {
           font-size: 14px;
           font-weight: bold;
-          width: 160px;
+          width: 180px;
           line-height: 20px;
           margin-top: 130px;
 
@@ -310,6 +326,9 @@
             width: 100%;
             margin-top: 24px;
             border-top: 1px solid #E9EEF2;
+            .herf_a{
+              color: #999;
+            }
           }
         }
 

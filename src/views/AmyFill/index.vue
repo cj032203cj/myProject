@@ -12,7 +12,7 @@
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="getDataList()">重置</el-button>
+          <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -23,7 +23,7 @@
       style="width: 100%;"
     >
       <el-table-column prop="title" header-align="center" align="center" label="我的调查表" />
-      <el-table-column prop="dept_name " header-align="center" align="center" label="部门" />
+      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
           <div v-if="scope.row.status==1">未提交</div>
@@ -86,6 +86,16 @@
       this.getDataList()
     },
     methods: {
+      reset(){
+        this.dataForm= {
+          title:'',
+          dept_name:'',
+        }
+        this.pageIndex=1
+        this.pageSize=10
+        this.totalPage=0
+        this.getDataList()
+      },
       getDataList() {
         myQuest({
           requestData: {
@@ -102,7 +112,7 @@
         })
       },
       addOrUpdateHandle(data){
-        let url = this.$router.resolve(
+        this.$router.push(
           {
             path:'/AdataDetail',
             query: {
@@ -113,7 +123,6 @@
             }
           }
         )
-        window.open(url.href,'_blank')
       },
       // 每页数
       sizeChangeHandle(val) {

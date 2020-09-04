@@ -133,7 +133,7 @@
       confirmHttp(){
         doPublish({
           requestData: {
-            "etime": moment(this.form.etime).format("YYYY-DD-MM HH:MM:SS"),
+            "etime": moment(this.form.etime).format("YYYY-MM-DD HH:MM:SS"),
             "orgList": this.form.value,
             "publish_id": this.publish_id
           },
@@ -169,7 +169,6 @@
               the_data.key=item.id
               that.data.push(the_data)
             if(data.indexOf(item.id)!=-1){
-            }else{
               the_data.label=item.org_name
               the_data.key=item.id
               that.form.value.push(item.id)

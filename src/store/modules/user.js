@@ -40,8 +40,6 @@ const actions = {
         }
         }).then(response => {
         const { data } = response
-        commit('SET_TOKEN', data.token)
-        commit('SET_ROLES', [data.orginfo])
         // localStorage.setItem('role',data.orginfo)JSON.stringify(applyGood)
         localStorage.setItem('role',JSON.stringify(data.orginfo))
         setToken(data.token)
