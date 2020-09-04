@@ -291,9 +291,9 @@ $light_gray:#eee;
     width: 480px;
     height: 100%;
     background: #fff;
-
     max-width: 100%;
     padding: 5% 54px 0;
+    padding-top: calc(50vh - 260px);
     float: right;
     overflow: hidden;
   }
