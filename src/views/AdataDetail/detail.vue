@@ -8,12 +8,12 @@
           </el-col>
           <el-col  :span="8" class="middle-text" style="">
             <div v-if="!requestDataId" class="div1">填报截止日期：{{dataObject.etime }}</div>
-            <div v-if="!requestDataId" class="div2">剩余填报时间：{{dataObject.etime }}</div>
+            <div v-if="!requestDataId" class="div2">剩余填报时间：{{timeDiff}}</div>
           </el-col>
           <el-col :span="7" class="right-text">
             <div>
               <el-button v-if="edit" type="info" @click="back" size="small">返回</el-button>
-              <el-button icon="el-icon-share" type="primary" size="small" style="margin-left: 20px" >分配</el-button>
+              <el-button icon="el-icon-share" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
               <el-button icon="el-icon-printer" type="primary" size="small" style="margin-left: 20px" >打印</el-button>
               <el-button type="primary" size="small" v-if="!requestDataId&&edit==1" style="margin-left: 20px" @click="answer" >提交</el-button>
             </div>
@@ -83,25 +83,34 @@
         </el-col>
       </el-row>
     </div>
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="500px">
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showDialog = false">取消</el-button>
+        <el-button type="primary" @click="">确认</el-button>
+      </div>
+    </el-dialog>
 
   </div>
 </template>
 
 <script>
-  import { questPreview ,savePreview,tempPreview} from '@/api/AdataCenter'
+  import { questPreview ,savePreview,tempPreview,queryNotDistList} from '@/api/AdataCenter'
 
   export default {
     name: "AdataDetail",
     data() {
       return {
+        showDialog:false,
         radio: -1,
         checkList: [],
         chose_index: -1,
         reverse: true,
         requestData:{},
+        timer:null,
         requestDataId:'',
         dataObject:{},
         edit:0,
+        timeDiff:'',
         activities: [{
           content: '1.活动按期开始活动按期开始活动活开始',
           color: '#B5B5B5'
@@ -113,6 +122,9 @@
           color: '#B5B5B5'
         }]
       }
+    },
+    beforeDestroy() {
+      clearInterval(this.timer);
     },
     mounted() {
       if(this.$route.query.org_id){
@@ -130,8 +142,34 @@
       this.getDataList()
     },
     methods: {
+      difference(endTime) {
+        let dateBegin = new Date();
+        let dateEnd = new Date(endTime);
+        let dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+        let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+        let leave1 = dateDiff % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
+        let hours = Math.floor(leave1 / (3600 * 1000));//计算出小时数
+        //计算相差分钟数
+        let leave2 = leave1 % (3600 * 1000);   //计算小时数后剩余的毫秒数
+        let minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+        //计算相差秒数
+        let leave3 = leave2 % (60 * 1000);     //计算分钟数后剩余的毫秒数
+        let seconds = Math.round(leave3 / 1000);
+        this.timeDiff=dayDiff + "天 " + hours + "小时 " + minutes + "分"
+      },
       back(){
         this.$router.go(-1)
+      },
+      shareQuest(){
+        this.showDialog=true
+        queryNotDistList({
+            requestData: {
+              "id": JSON.parse(localStorage.getItem('role')).id,
+              "org_id": this.$route.query.org_id,
+              "publish_id":this.$route.query.que_id
+            },
+          }).then(res => {
+        })
       },
       answer(){
         let that = this
@@ -186,6 +224,7 @@
 
       },
       getDataList(){
+        let that = this
         if(this.requestDataId){
           tempPreview({
             requestData: this.requestDataId,
@@ -215,6 +254,9 @@
               }
             })
             this.dataObject=res.data
+            this.timer = setInterval(function (){
+              that.difference(that.dataObject.etime)
+            }, 1000);
           })
         }else{
           questPreview({
@@ -245,6 +287,10 @@
               }
             })
             this.dataObject=res.data
+            this.timer = setInterval(function (){
+              that.difference(that.dataObject.etime)
+            }, 1000);
+
           })
         }
 

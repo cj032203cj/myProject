@@ -124,7 +124,6 @@ export default {
   },
   mounted(){
     this.userInfo=JSON.parse(localStorage.getItem('role'))
-    console.log(this.userInfo)
   },
   methods: {
     confirmInfo(){

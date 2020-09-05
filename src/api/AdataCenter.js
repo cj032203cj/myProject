@@ -105,4 +105,11 @@ export function feedback(data) {
     data
   })
 }
+export function queryNotDistList(data) {
+  return request({
+    url: '/questMgrService/queryNotDistList',
+    method: 'post',
+    data
+  })
+}
 

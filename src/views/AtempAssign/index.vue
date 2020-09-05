@@ -162,7 +162,6 @@
           requestData: {
           },
         }).then(res => {
-          console.log(data)
           res.data.pageData.forEach((item, index) => {
             const the_data={}
               the_data.label=item.org_name
