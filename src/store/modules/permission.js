@@ -40,9 +40,9 @@ const state = {
 }
 
 const mutations = {
-  SET_ROUTES: (state, routes) => {
-    state.addRoutes = routes
-    state.routes = constantRoutes.concat(routes)
+  SET_ROUTES: (state, index) => {
+    // state.addRoutes = routes
+    state.routes = constantRoutes
   }
 }
 
@@ -55,8 +55,17 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
+      constantRoutes.forEach((item,index)=>{
+        if(item.permission!=undefined){
+          if(item.permission!=JSON.parse(localStorage.getItem('role')).role_code){
+            item.hidden=false
+          }else{
+            item.hidden=true
+          }
+        }
+      })
+      console.log(constantRoutes)
       commit('SET_ROUTES',accessedRoutes)
-      console.log(state.routes)
       resolve(accessedRoutes)
     })
   }

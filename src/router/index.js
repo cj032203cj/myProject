@@ -54,11 +54,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/auth-redirect',
-    component: () => import('@/views/login/auth-redirect'),
-    hidden: true
-  },
-  {
     path: '/',
     component: Layout,
     redirect: '/dashboard',
@@ -73,50 +68,10 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/',
-    component: Layout,
-    redirect: '/dashboard',
-    hidden:true,
-    children: [
-      {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: {title: '首页', icon: 'dashboard', affix: false}
-      }
-    ]
-  },
-  {
-    path: '/documentation',
-    component: Layout,
-    hidden:true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/documentation/index'),
-        name: 'Documentation',
-        meta: {title: 'Documentation', icon: 'documentation', affix: false}
-      }
-    ]
-  },
-  {
-    path: '/profile',
-    component: Layout,
-    redirect: '/profile/index',
-    hidden: true,
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/profile/index'),
-        name: 'Profile',
-        meta: {title: 'Profile', icon: 'user', noCache: true}
-      }
-    ]
-  },
-  {
     path: '/AdataCenter',
     component: Layout,
     redirect: '/AdataCenter/index',
+    permission:'admin',
     children: [
       {
         path: 'index',
@@ -137,6 +92,7 @@ export const constantRoutes = [
     path: '/AtempAssign',
     component: Layout,
     redirect: '/AtempAssign/index',
+    permission:'admin',
     children: [
       {
         path: 'index',
@@ -150,6 +106,7 @@ export const constantRoutes = [
     path: '/AtempManage',
     component: Layout,
     redirect: '/AtempManage/index',
+    permission:'admin',
     children: [
       {
         path: 'index',
@@ -163,6 +120,7 @@ export const constantRoutes = [
     path: '/AaccountManage',
     component: Layout,
     redirect: '/AaccountManage/index',
+    permission:'admin',
     children: [
       {
         path: 'index',
@@ -176,6 +134,7 @@ export const constantRoutes = [
     path: '/AmyFill',
     component: Layout,
     redirect: '/AmyFill/index',
+    permission:'user',
     children: [
       {
         path: 'index',

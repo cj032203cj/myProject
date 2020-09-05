@@ -90,7 +90,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="showDialog = false">取消修改</el-button>
-        <el-button type="primary" @click="updPwd">确认修改</el-button>
+        <el-button type="primary">确认修改</el-button>
       </div>
     </el-dialog>
   </div>
