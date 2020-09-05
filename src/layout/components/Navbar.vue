@@ -23,30 +23,58 @@
           <div style="font-size: 14px;font-weight: bold">{{userInfo.login_name}}</div>
           <i class="el-icon-caret-bottom" />
         </div>
+
         <el-dropdown-menu slot="dropdown">
-<!--          <router-link to="/profile/index">-->
-<!--            <el-dropdown-item>Profile</el-dropdown-item>-->
-<!--          </router-link>-->
-<!--          <router-link to="/">-->
-<!--            <el-dropdown-item>Dashboard</el-dropdown-item>-->
-<!--          </router-link>-->
-<!--          <a target="_blank" href="https://github.com/PanJiaChen/vue-element-admin/">-->
-<!--            <el-dropdown-item>Github</el-dropdown-item>-->
-<!--          </a>-->
-<!--          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">-->
-<!--            <el-dropdown-item>Docs</el-dropdown-item>-->
-<!--          </a>-->
+          <el-dropdown-item divided @click.native="getInfo(1)">
+            <span style="display:block;">账户信息</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided @click.native="getInfo(2)">
+            <span style="display:block;">修改密码</span>
+          </el-dropdown-item>
+          <el-dropdown-item divided @click.native="getInfo(3)">
+            <span style="display:block;">反馈问题</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出登录</span>
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog :title="type_name" :visible.sync="showDialog" width="500px">
+      <el-form ref="form" :model="formNew" :rules="rules" label-width="100px">
+        <el-form-item label="联系人：" v-if="type==1">
+          <el-input v-model="formNew.contact_name" disabled style="width: 300px"></el-input>
+        </el-form-item>
+        <el-form-item label="用户名：" v-if="type==1">
+          <el-input v-model="formNew.org_name" disabled style="width: 300px"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号：" v-if="type==1">
+          <el-input v-model="formNew.phone_num" disabled style="width: 300px"></el-input>
+        </el-form-item>
+        <el-form-item label="原密码：" v-if="type==2" prop="old_pwd">
+          <el-input v-model="formNew.old_pwd" type="password" auto-complete="new-password" placeholder="请输入原密码" style="width: 300px" ></el-input>
+        </el-form-item>
+        <el-form-item label="新密码：" v-if="type==2" prop="new_pwd">
+          <el-input v-model="formNew.new_pwd" type="password" auto-complete="new-password" placeholder="请输入新密码" style="width: 300px" ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码：" v-if="type==2" prop="confirm_pwd">
+          <el-input v-model="formNew.confirm_pwd"  type="password" auto-complete="new-password" placeholder="请输入新密码"  style="width: 300px" ></el-input>
+        </el-form-item>
+        <el-form-item label="反馈问题：" v-if="type==3" prop="feedback">
+          <el-input v-model="formNew.feedback" type="textarea" style="width: 300px" ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showDialog = false">取消</el-button>
+        <el-button type="primary" @click="confirmInfo()">确认</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
+import {updPwd,feedback} from '@/api/AdataCenter'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import ErrorLog from '@/components/ErrorLog'
@@ -57,7 +85,26 @@ import Search from '@/components/HeaderSearch'
 export default {
   data(){
     return{
-      userInfo:{}
+      showDialog:false,
+      formNew:{},
+      rules: {
+        feedback: [
+          {required: true, message: '请输入活动名称', trigger: 'blur'},
+        ],
+        old_pwd: [
+          {required: true, message: '请输入原密码', trigger: 'blur'},
+        ],
+        new_pwd: [
+          {required: true, message: '请输入新密码', trigger: 'blur'},
+        ],
+        confirm_pwd: [
+          {required: true, message: '请输入新密码', trigger: 'blur'},
+        ],
+
+      },
+      userInfo:{},
+      type:1,
+      type_name:''
     }
   },
   components: {
@@ -82,6 +129,83 @@ export default {
     console.log(this.userInfo)
   },
   methods: {
+    confirmInfo(){
+      if(this.type==1){
+        this.showDialog=false
+      }else if(this.type==2){
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            updPwd({
+              requestData: {
+                "confirm_pwd": this.formNew.confirm_pwd,
+                "id": JSON.parse(localStorage.getItem('role')).id,
+                "new_pwd": this.formNew.new_pwd,
+                "old_pwd": this.formNew.old_pwd
+              },
+            }).then(res => {
+              this.$message({
+                message: res.returnMsg,
+                type: 'success'
+              })
+              this.showDialog=false
+              this.logout()
+            })
+          }else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+
+      }else if(this.type==3){
+        this.$refs.form.validate(valid => {
+          if (valid) {
+            feedback({
+              requestData: this.formNew.feedback,
+            }).then(res => {
+              this.$message({
+                message: res.returnMsg,
+                type: 'success'
+              })
+              this.showDialog=false
+            })
+          }else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+
+      }
+    },
+    getInfo(type){
+      if(type==1){
+        this.type_name='账户信息'
+      }else if(type==2){
+        this.type_name='修改密码'
+      }else{
+        this.type_name='反馈信息'
+      }
+      this.type= type
+      this.showDialog=true
+      this.$refs.form.clearValidate();
+
+      this.getDetailInfo(type)
+    },
+    getDetailInfo(type){
+      if(type==1){
+        this.formNew={
+          phone_num:JSON.parse(localStorage.getItem('role')).phone_num,
+          org_name:JSON.parse(localStorage.getItem('role')).org_name,
+          contact_name:JSON.parse(localStorage.getItem('role')).contact_name,
+        }
+      }else if(type==2){
+        this.formNew={
+
+        }
+      }else{
+        this.formNew={
+        }
+      }
+    },
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
     },

@@ -13,7 +13,7 @@
           <div class="title">登录系统</div>
           <div class="title-line"></div>
       </div>
-      <el-form-item prop="username">
+      <el-form-item prop="username" class="change-style">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
@@ -29,7 +29,7 @@
         />
       </el-form-item>
       <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
+        <el-form-item prop="password"  class="change-style">
           <span class="svg-container">
             <svg-icon icon-class="password" />
           </span>
@@ -51,11 +51,11 @@
           </span>
         </el-form-item>
       </el-tooltip>
-      <div class="forget-pas" @click="isLogin=false">忘记密码</div>
+      <el-link class="forget-pas" @click="isLogin=false">忘记密码</el-link>
       <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登 录</el-button>
       <div class="sm-rsy"></div>
     </el-form>
-    <el-form ref="loginForm" v-else :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
+    <el-form ref="fogForm" v-else :model="form" :rules="rules" class="login-form forget" autocomplete="on" label-position="left">
       <div class="title-container disFlex">
         <div>
           <div class="title">忘记密码</div>
@@ -63,80 +63,64 @@
         </div>
         <el-link class="back_up" @click="isLogin=true">返回上一步</el-link>
       </div>
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          class="input-style"
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="请输入11位手机号"
-          name="username"
-          type="text"
-          tabindex="1"
-          autocomplete="on"
-        />
+      <el-form-item label="手机号：" prop="phone">
+        <el-input v-model="form.phone" class="the_input" placeholder="请输入11位手机号"></el-input>
       </el-form-item>
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
-          <span class="svg-container">
-            <svg-icon icon-class="password" />
+      <div class="label_name disFlex">
+        <div style="line-height: 36px">验证码：</div>
+        <el-button type="primary" class="getRlues" plain style="margin-left: 10px">图文校验</el-button>
+      </div>
+      <el-form-item label="短信码：">
+        <el-input v-model="form.pwd" class="the_input" placeholdaer="请输入短信码"></el-input>
+        <span class="show-dx" @click="confirmPhone">
+            获取
           </span>
-          <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="请输入密码"
-            name="password"
-            tabindex="2"
-            autocomplete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
-          />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
-        </el-form-item>
-      </el-tooltip>
-      <el-button :loading="loading" type="primary" class="login-btn" @click.native.prevent="handleLogin">登 录</el-button>
+      </el-form-item>
+      <el-button :loading="loading" type="primary" class="login-btn next-btn" @click="toChange">下一步</el-button>
       <div class="sm-rsy"></div>
     </el-form>
-    <el-dialog title="Or connect with" :visible.sync="showDialog">
-      Can not be simulated on local, so please combine you own business simulation! ! !
-      <br>
-      <br>
-      <br>
-      <social-sign />
+    <el-dialog title="忘记密码" :visible.sync="showDialog" width="500px">
+      <el-form ref="form" :model="formNew" :rules="rules" label-width="100px">
+        <el-form-item label="新密码" prop="psd">
+          <el-input v-model="formNew.psd" type="password" auto-complete="new-password" placeholder="请输入新密码" style="width: 300px" ></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="new_psd" >
+          <el-input v-model="formNew.new_psd" type="password" auto-complete="new-password" placeholder="请输入新密码"  style="width: 300px" ></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showDialog = false">取消修改</el-button>
+        <el-button type="primary" @click="updPwd">确认修改</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
-import SocialSign from './components/SocialSignin'
-
+import {updPwd} from '@/api/AdataCenter'
 export default {
   name: 'Login',
-  components: { SocialSign },
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 3) {
-        callback(new Error('密码至少三位数'))
+    var validatePhone = (rule, value, callback) => {
+      debugger
+      let reg=/^1[3|4|5|7|8][0-9]{9}$/
+      if (!reg.test(value)) {
+        callback(new Error('请输入正确的手机号格式'))
       } else {
         callback()
       }
     }
     return {
+      rules:{
+        phone: [
+          { validator: validatePhone, trigger: 'blur' }
+        ]
+      },
+      formNew:{},
+      form:{
+        phone:'',
+        pwd:''
+      },
       isLogin:true,
       loginForm: {
         username: 'admin',
@@ -149,8 +133,8 @@ export default {
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
-      showDialog: false,
       redirect: undefined,
+      showDialog:false,
       otherQuery: {}
     }
   },
@@ -181,6 +165,9 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    toChange(){
+      this.showDialog=true
+    },
     checkCapslock(e) {
       const { key } = e
       this.capsTooltip = key && key.length === 1 && (key >= 'A' && key <= 'Z')
@@ -193,6 +180,16 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.password.focus()
+      })
+    },
+    confirmPhone(){
+      this.$refs.fogForm.validate(valid => {
+        if (valid) {
+
+        }else {
+          console.log('error submit!!')
+          return false
+        }
       })
     },
     handleLogin() {
@@ -226,24 +223,7 @@ export default {
         return acc
       }, {})
     }
-    // afterQRScan() {
-    //   if (e.key === 'x-admin-oauth-code') {
-    //     const code = getQueryObject(e.newValue)
-    //     const codeMap = {
-    //       wechat: 'code',
-    //       tencent: 'code'
-    //     }
-    //     const type = codeMap[this.auth_type]
-    //     const codeName = code[type]
-    //     if (codeName) {
-    //       this.$store.dispatch('LoginByThirdparty', codeName).then(() => {
-    //         this.$router.push({ path: this.redirect || '/' })
-    //       })
-    //     } else {
-    //       alert('第三方登录失败')
-    //     }
-    //   }
-    // }
+
   }
 }
 </script>
@@ -264,25 +244,32 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
-  .el-input {
-    display: inline-block;
+  .login-form.forget .el-input input{
+    width: 372px;
     height: 56px;
-    width: 312px;
-
-    input {
-      background: #fff;
-      background: #fff;
-      border-radius: 0px;
-      padding: 12px 5px 12px 15px;
+    line-height: 56px;
+    color: #000;
+  }
+  .change-style{
+    .el-input {
+      display: inline-block;
       height: 56px;
-      color: #000;
-      border: none;
+      width: 312px;
+
+      input {
+        background: #fff;
+        border-radius: 0px;
+        padding: 12px 5px 12px 15px;
+        height: 56px;
+        color: #000;
+        border: none;
+      }
     }
   }
 
-  .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
 
+  .el-form-item.change-style {
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border: 2px solid #E3E8F1;
     background: #F4F6F8;
     color: #454545;
@@ -343,7 +330,11 @@ $light_gray:#eee;
     padding-top: calc(50vh - 260px);
     float: right;
     overflow: hidden;
+    .next-btn{
+      margin-top: 40px;
+    }
   }
+
 
   .tips {
     font-size: 14px;
@@ -367,9 +358,19 @@ $light_gray:#eee;
     border-right: 2px solid #E3E8F1;
     display: inline-block;
   }
+  .label_name{
+    margin-bottom: 14px;
+  }
+
+  .getRlues{
+    background: #fff;
+  }
+  .el-button--primary.getRlues.is-plain:hover, .el-button--primary.getRlues.is-plain:focus{
+    color: #1890ff;
+  }
   .forget-pas{
-    text-align: right;
-    font-size: 14px;
+    float: right;
+      font-size: 14px;
     margin-top: 30px;
     margin-bottom: 64px;
     color: #3B86FD;
@@ -411,6 +412,7 @@ $light_gray:#eee;
       margin-bottom: 72px;
       &.bg-fff{
         background: #fff;
+        margin-bottom: 36px;
       }
     }
     .input-style{
@@ -429,6 +431,15 @@ $light_gray:#eee;
     user-select: none;
   }
 
+  .show-dx {
+    position: absolute;
+    right: 10px;
+    top: 48px;
+    font-size: 16px;
+    color: $dark_gray;
+    cursor: pointer;
+    user-select: none;
+  }
   .thirdparty-button {
     position: absolute;
     right: 0;

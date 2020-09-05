@@ -44,7 +44,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
     />
-    <el-dialog title="分配医院" :visible.sync="dialogFormVisible" width="500px">
+    <el-dialog title="新建账号" :visible.sync="dialogFormVisible" width="500px">
       <el-form ref="form"  :model="form" :rules="rules" label-width="100px">
         <el-form-item label="医院名称" prop="org_name">
           <el-input v-model="form.org_name" placeholder="请输入医院名称" style="width: 300px" ></el-input>
@@ -187,6 +187,7 @@ export default {
 
       }
       this.dialogFormVisible=true
+      this.$refs.form.clearValidate();
     },
     share(data){
       this.the_org=data.org_name

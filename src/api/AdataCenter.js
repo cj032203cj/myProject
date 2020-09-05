@@ -91,5 +91,18 @@ export function tempPreview(data) {
     data
   })
 }
-
+export function updPwd(data) {
+  return request({
+    url: '/accountService/updPwd',
+    method: 'post',
+    data
+  })
+}
+export function feedback(data) {
+  return request({
+    url: '/accountService/feedback',
+    method: 'post',
+    data
+  })
+}
 
