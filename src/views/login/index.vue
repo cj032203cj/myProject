@@ -201,7 +201,7 @@ export default {
                 message: res.returnMsg,
                 type: 'success'
               })
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              this.$router.push({ path: '/', query: this.otherQuery })
               this.loading = false
             })
             .catch((res) => {
