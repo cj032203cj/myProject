@@ -27,7 +27,6 @@
           <div class="left-title">
             <div>{{dataObject.title}}</div>
             <div class="left-list">
-
               <el-timeline style="padding-left: 0;margin-top: 20px">
                 <el-timeline-item
                   style="cursor: pointer"
@@ -83,23 +82,79 @@
         </el-col>
       </el-row>
     </div>
-    <el-dialog title="待填报内容" :visible.sync="showDialog" width="500px">
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="900px">
+      <el-table
+        :data="dataHasAnswerList"
+        border
+        style="width: 100%;margin-bottom: 50px"
+        size="small"
+      >
+        <el-table-column prop="percentage" header-align="center" align="center" label="完成度" >
+          <template slot-scope="scope">
+            <div class="less-height">
+              <el-progress type="circle" size="small" :percentage="scope.row.percentage"></el-progress>
+
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="subjStr"  header-align="center" align="center" label="已分配标题" ></el-table-column>
+        <el-table-column prop="title" header-align="center" align="center" label="分配内容" >
+          <template slot-scope="scope">
+            <div>请打开链接<el-link>www.XXXX.com</el-link>填报第{{scope.row.subjStr}}题的内容</div>
+          </template>
+        </el-table-column>
+        <el-table-column prop="created_time" header-align="center" align="center" label="生成时间" />
+        <el-table-column prop="title" header-align="center" align="center" label="操作" >
+          <template slot-scope="scope">
+            <el-link type="warning" @click="">撤销</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin: 15px 0;">全选</el-checkbox>
+        <el-checkbox-group v-model="choseAnswer" @change="handleCheckedCitiesChange">
+          <div style="height: 200px;overflow-y: auto;background: #F1F5F9;">
+            <el-checkbox v-for="city in dataAnswerList" :label="city.id" :key="city.id" style="display: block;height: 30px;line-height: 30px;padding-left: 10px;color: #000">{{city.sort_no}}. {{city.title}}</el-checkbox>
+          </div>
+        </el-checkbox-group>
       <div slot="footer" class="dialog-footer">
         <el-button @click="showDialog = false">取消</el-button>
-        <el-button type="primary" @click="">确认</el-button>
+        <el-button type="primary" @click="fenpei">分配</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="查看权限" :visible.sync="showDialogNext">
+      <el-radio-group v-model="switchRoles">
+        <el-radio :label="1">
+          所有人
+        </el-radio>
+        <el-radio :label="2">
+          密码查看
+        </el-radio>
+      </el-radio-group>
+      <div v-if="switchRoles==2" class="disFlex" style="margin-top: 30px">
+        <el-input type="text" style="width:200px;margin-right: 20px" v-model="setPwd" placeholder="输入密码"></el-input>
+        <el-button type="primary" @click="setPwdFn">保存密码</el-button>
+      </div>
 
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="showDialogNext = false">取消</el-button>
+        <el-button type="primary" @click="fenpei">分配</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import { questPreview ,savePreview,tempPreview,queryNotDistList} from '@/api/AdataCenter'
+  import { questPreview ,savePreview,tempPreview,queryNotDistList,doDist,questShareList} from '@/api/AdataCenter'
 
   export default {
     name: "AdataDetail",
     data() {
       return {
+        setPwd:'',
+        switchRoles:1,
+        showDialogNext:false,
+        checkAll: false,
+        isIndeterminate: true,
         showDialog:false,
         radio: -1,
         checkList: [],
@@ -108,6 +163,9 @@
         requestData:{},
         timer:null,
         requestDataId:'',
+        choseAnswer:[],
+        dataAnswerList:[],
+        dataHasAnswerList:[],
         dataObject:{},
         edit:0,
         timeDiff:'',
@@ -142,6 +200,40 @@
       this.getDataList()
     },
     methods: {
+      setPwdFn(){
+        debugger
+      },
+      fenpei(){
+        doDist({
+          requestData: {
+            "id": JSON.parse(localStorage.getItem('role')).id,
+            "org_id": this.$route.query.org_id,
+            "publish_id": this.$route.query.que_id,
+            "subjStr": this.choseAnswer.toString()
+          }
+        }).then(res => {
+
+          this.shareQuest()
+          this.showDialogNext=true
+          this.$message({
+            message: res.returnMsg,
+            type: 'success'
+          })
+        })
+      },
+      handleCheckAllChange(val) {
+        let the_data=[]
+        this.dataAnswerList.forEach(item=>{
+          the_data.push(item.id)
+        })
+        this.choseAnswer = val ? the_data : [];
+        this.isIndeterminate = false;
+      },
+      handleCheckedCitiesChange(value) {
+        let checkedCount = value.length;
+        this.checkAll = checkedCount === this.dataAnswerList.length;
+        this.isIndeterminate = checkedCount > 0 && checkedCount < this.dataAnswerList.length;
+      },
       difference(endTime) {
         let dateBegin = new Date();
         let dateEnd = new Date(endTime);
@@ -162,6 +254,15 @@
       },
       shareQuest(){
         this.showDialog=true
+        questShareList({
+          requestData: {
+            "id": JSON.parse(localStorage.getItem('role')).id,
+            "org_id": this.$route.query.org_id,
+            "publish_id":this.$route.query.que_id
+          },
+        }).then(res => {
+          this.dataHasAnswerList=res.data
+        })
         queryNotDistList({
             requestData: {
               "id": JSON.parse(localStorage.getItem('role')).id,
@@ -169,7 +270,8 @@
               "publish_id":this.$route.query.que_id
             },
           }).then(res => {
-        })
+            this.dataAnswerList=res.data
+          })
       },
       answer(){
         let that = this
@@ -305,7 +407,15 @@
     }
   }
 </script>
-
+<style lang="scss">
+  .less-height .el-progress-circle{
+    width: 40px !important;
+    height: 40px !important;
+  }
+  .less-height .el-progress__text{
+    font-size: 12px !important;
+  }
+</style>
 <style scoped lang="scss">
   .detail {
     height: 100vh;

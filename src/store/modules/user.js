@@ -42,6 +42,7 @@ const actions = {
         const { data } = response
         // localStorage.setItem('role',data.orginfo)JSON.stringify(applyGood)
         localStorage.setItem('role',JSON.stringify(data.orginfo))
+        localStorage.setItem('token',JSON.stringify(data.token))
         setToken(data.token)
         resolve(response)
       }).catch(error => {
@@ -83,7 +84,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout({
         requestData: {
-        }
+        },
       }).then((response) => {
         commit('SET_TOKEN', '')
         commit('SET_ROLES', [])
@@ -106,6 +107,7 @@ const actions = {
     return new Promise(resolve => {
       commit('SET_TOKEN', '')
       commit('SET_ROLES', [])
+      localStorage.removeItem('role')
       removeToken()
       resolve()
     })

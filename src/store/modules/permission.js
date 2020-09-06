@@ -57,7 +57,7 @@ const actions = {
       }
       constantRoutes.forEach((item,index)=>{
         if(item.permission!=undefined){
-          if(item.permission!=JSON.parse(localStorage.getItem('role')).role_code){
+          if(item.permission==JSON.parse(localStorage.getItem('role')).role_code){
             item.hidden=false
           }else{
             item.hidden=true

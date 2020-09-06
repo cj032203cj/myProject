@@ -112,4 +112,17 @@ export function queryNotDistList(data) {
     data
   })
 }
-
+export function doDist(data) {
+  return request({
+    url: '/questMgrService/doDist',
+    method: 'post',
+    data
+  })
+}
+export function questShareList(data) {
+  return request({
+    url: '/questMgrService/questShareList',
+    method: 'post',
+    data
+  })
+}
