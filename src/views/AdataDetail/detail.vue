@@ -376,9 +376,9 @@
           res.data.forEach(item=>{
             let the_url=''
             if(item.pwd!=null){
-              the_url='请打开链接www.XXXX.com'+item.shareid+'填报第'+item.subjStr+'题的内容，查看密码为'+item.pwd
+              the_url='请打开'+item.url+',填报第'+item.subjStr+'题的内容，查看密码为'+item.pwd
             }else{
-              the_url='请打开链接www.XXXX.com'+item.shareid+'填报第'+item.subjStr+'题的内容'
+              the_url='请打开'+item.url+',填报第'+item.subjStr+'题的内容'
             }
             item.the_url=the_url
           })
