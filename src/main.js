@@ -18,7 +18,11 @@ import './icons' // icon
 import './permission' // permission control
 import './utils/error-log' // error log
 
+import SlideVerify from 'vue-monoplasty-slide-verify';
 
+Vue.use(SlideVerify);
+import Print from 'vue-print-nb'
+Vue.use(Print);
 import * as filters from './filters' // global filters
 /**
  * If you don't want to use mock-server

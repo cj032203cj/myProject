@@ -66,13 +66,13 @@
       <el-form-item label="手机号：" prop="phone">
         <el-input v-model="form.phone" class="the_input" placeholder="请输入11位手机号"></el-input>
       </el-form-item>
-      <div class="label_name disFlex">
-        <div style="line-height: 36px">验证码：</div>
-        <el-button type="primary" class="getRlues" plain style="margin-left: 10px">图文校验</el-button>
-      </div>
-      <el-form-item label="短信码：">
+      <!--<div class="label_name disFlex">-->
+        <!--<div style="line-height: 36px">验证码：</div>-->
+        <!--<el-button type="primary" class="getRlues" plain style="margin-left: 10px" @click="getPic">图文校验</el-button>-->
+      <!--</div>-->
+      <el-form-item label="短信验证码：">
         <el-input v-model="form.pwd" class="the_input" placeholdaer="请输入短信码"></el-input>
-        <span class="show-dx" @click="confirmPhone">
+        <span class="show-dx" @click="getPic">
             获取
           </span>
       </el-form-item>
@@ -93,6 +93,18 @@
         <el-button type="primary">确认修改</el-button>
       </div>
     </el-dialog>
+    <slide-verify
+      v-if="show_yzm"
+      class="slide-box"
+      ref="slideblock"
+      @again="onAgain"
+      @fulfilled="onFulfilled"
+      @success="onSuccess"
+      @fail="onFail"
+      @refresh="onRefresh"
+      :accuracy="accuracy"
+      :slider-text="text"
+    ></slide-verify>
   </div>
 </template>
 
@@ -135,7 +147,13 @@ export default {
       loading: false,
       redirect: undefined,
       showDialog:false,
-      otherQuery: {}
+      otherQuery: {},
+      msg: '',
+      text: '向右滑',
+      // 精确度小，可允许的误差范围小；为1时，则表示滑块要与凹槽完全重叠，才能验证成功。默认值为5
+      accuracy: 1,
+      show_yzm:false,
+      can_click:false
     }
   },
   watch: {
@@ -164,8 +182,37 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    onSuccess(){
+      this.$message({ message: '验证通过，正在发送短信码', type: 'success' })
+      this.can_click=true
+      this.show_yzm=false
+    },
+    onFail(){
+      this.$message({ message: '验证失败', type: 'error' })
+    },
+    onRefresh(){
+      console.log('点击了刷新小图标');
+      this.msg = ''
+    },
+    onFulfilled() {
+      console.log('刷新成功啦！');
+    },
+    onAgain() {
+      console.log('检测到非人为操作的哦！');
+      this.msg = 'try again';
+      // 刷新
+      this.$refs.slideblock.reset();
+    },
+    handleClick() {
+      // 父组件直接可以调用刷新方法
+      this.$refs.slideblock.reset();
+    },
     toChange(){
       this.showDialog=true
+    },
+    getPic(){
+      this.show_yzm=true
+      this.can_click=false
     },
     checkCapslock(e) {
       const { key } = e
@@ -182,14 +229,22 @@ export default {
       })
     },
     confirmPhone(){
-      this.$refs.fogForm.validate(valid => {
-        if (valid) {
+      if(this.can_click){
+        this.$refs.fogForm.validate(valid => {
+          if (valid) {
+            debugger
+          }else {
+            console.log('error submit!!')
+            return false
+          }
+        })
+      }else{
+        this.$message({
+          message: '请通过滑动验证',
+          type: 'success'
+        })
+      }
 
-        }else {
-          console.log('error submit!!')
-          return false
-        }
-      })
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
@@ -287,6 +342,11 @@ $light_gray:#eee;
   background: url("../../assets/imgs/bg.png") left top no-repeat;
   background-size: cover;
   overflow: hidden;
+  .slide-box{
+    position: absolute;
+    left: calc(50% - 155px);
+    top: calc(50% - 107px);
+  }
   .login-left{
     position: absolute;
     left: 48px;

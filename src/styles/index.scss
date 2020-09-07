@@ -192,9 +192,13 @@ aside {
 .el-menu-item{
   height: auto !important;
 }
-.el-menu-item div{
-  height: 40px !important;
-  line-height: 40px;
+.el-menu-item div:nth-of-type(1){
+  height: 50px !important;
+  line-height: 70px;
+}
+.el-menu-item div:nth-of-type(2){
+  height: 50px !important;
+  line-height: 30px;
 }
 .hideSidebar .el-menu a{
   height: 54px !important;
@@ -204,4 +208,8 @@ aside {
 }
 .disFlex{
   display: flex;
+}
+.router-link-active .el-menu-item{
+  font-size: 12px;
+  background: red;
 }

@@ -34,12 +34,12 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
-          <div v-if="scope.row.status==0">已填报</div>
+          <div v-if="scope.row.status==2">已填报</div>
           <div v-if="scope.row.status==1">未填报</div>
         </template>
       </el-table-column>
       <el-table-column
-        prop="startTime"
+        prop="submit_time"
         header-align="center"
         align="center"
         width="180"

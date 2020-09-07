@@ -10,7 +10,7 @@
   .sidebar-container {
     transition: width 0.28s;
     width: $sideBarWidth !important;
-    background-color: $menuBg;
+    background-color: #213563;
     height: 100%;
     position: fixed;
     font-size: 0px;
@@ -75,7 +75,14 @@
         background-color: $menuHover !important;
       }
     }
+    .submenu-title-noDropdown{
+      color: #fff !important;
+    }
 
+    .submenu-title-noDropdown.is-active{
+      background-color: #0C214F !important;
+      color: #1890ff !important;
+    }
     .is-active>.el-submenu__title {
       color: $subMenuActiveText !important;
     }

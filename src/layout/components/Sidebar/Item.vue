@@ -23,7 +23,6 @@ export default {
         vnodes.push(<div class="center"><svg-icon icon-class={icon}/></div>)
       }
     }
-
     if (title) {
       vnodes.push(<div class="center" slot='title'>{(title)}</div>)
     }

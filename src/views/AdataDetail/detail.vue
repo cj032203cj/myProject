@@ -9,13 +9,14 @@
           <el-col  :span="8" class="middle-text" style="">
             <div v-if="!requestDataId" class="div1">填报截止日期：{{dataObject.etime }}</div>
             <div v-if="!requestDataId" class="div2">剩余填报时间：{{timeDiff}}</div>
+            <div style="visibility: hidden" v-else>none</div>
           </el-col>
           <el-col :span="7" class="right-text">
             <div>
-              <el-button v-if="edit" type="info" @click="back" size="small">返回</el-button>
-              <el-button icon="el-icon-share" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
-              <el-button icon="el-icon-printer" type="primary" size="small" style="margin-left: 20px" >打印</el-button>
-              <el-button type="primary" size="small" v-if="!requestDataId&&edit==1" style="margin-left: 20px" @click="answer" >提交</el-button>
+              <el-button type="info" v-if="edit==1" @click="back" size="small">返回</el-button>
+              <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
+              <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="'#printTest'" style="margin-left: 20px" >打印</el-button>
+              <el-button type="primary" size="small" v-if="(!requestDataId&&edit==1)||sharePage" style="margin-left: 20px" @click="answer" >提交</el-button>
             </div>
           </el-col>
         </el-row>
@@ -23,44 +24,46 @@
     </div>
     <div class="grid-center">
       <el-row class="grid-center-row">
-        <el-col :span="8" v-if="!requestDataId">
-          <div class="left-title">
-            <div>{{dataObject.title}}</div>
-            <div class="left-list">
-              <el-timeline style="padding-left: 0;margin-top: 20px">
-                <el-timeline-item
-                  style="cursor: pointer"
-                  v-for="(activity, index) in dataObject.subjList"
-                  :key="index"
-                  :color="activity.color"
-                  :timestamp="activity.timestamp">
-                  <div @click="chose_activity(activity,index)" :class="{active_color:index==chose_index}">
-                    <a :href="'#herf_'+activity.id" class="herf_a">{{activity.title}}</a>
-                  </div>
-                </el-timeline-item>
-              </el-timeline>
-            </div>
+        <el-scrollbar class="left-title">
+          <div>{{dataObject.title}}</div>
+          <div class="left-list">
+            <el-timeline style="padding-left: 2px;margin-top: 20px">
+              <el-timeline-item
+                style="cursor: pointer"
+                v-for="(activity, index) in dataObject.subjList"
+                :key="index"
+                :color="activity.color"
+                :timestamp="activity.timestamp">
+                <div @click="chose_activity(activity,index)" :class="{active_color:index==chose_index}">
+                  <a>{{activity.title}}</a>
+                </div>
+              </el-timeline-item>
+            </el-timeline>
           </div>
+        </el-scrollbar>
+        <el-col :span="8" v-if="!requestDataId&&!sharePage">
+          <div style="visibility: hidden">none</div>
         </el-col>
-        <el-col :span="requestDataId?24:16" class="right-info-box">
+        <el-col :span="requestDataId||sharePage?24:16" class="right-info-box">
+          <div id="printTest" >
           <div>
-            <div class="grid-title">{{dataObject.title}}</div>
-            <div class="grid-org">{{dataObject.dept_name}}</div>
-            <div class="grid-disc">
+            <div class="grid-title" style="margin-top: 40px;font-size: 20px; margin-bottom: 32px;font-weight: bold;text-align: center;">{{dataObject.title}}</div>
+            <div class="grid-org" style="margin-bottom: 24px;text-align: center;">{{dataObject.dept_name}}</div>
+            <div class="grid-disc" style="text-indent: 36px; line-height: 24px;font-size: 18px;">
               {{dataObject.que_desc}}
             </div>
           </div>
           <div style="margin-top: 40px" v-for="(item_0,index_0) in dataObject.subjList">
-            <div class="list-title" :id="'herf_'+item_0.id">{{item_0.title}}</div>
+            <div class="list-title" style="font-weight: bold" :id="'herf_'+item_0.id">{{item_0.title}}</div>
             <ul>
-              <li class="list-desc" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
+              <li class="list-desc" style="margin-top: 16px;color: #ccc;font-size: 18px;text-indent: 18px;margin-bottom: 30px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
             </ul>
             <div>
-              <div v-for="(item_2,index_2) in item_0.subjmxList" :key="index_2" class="li-form">
+              <div v-for="(item_2,index_2) in item_0.subjmxList" :key="index_2" class="li-form" style="margin-bottom: 32px">
                 <div>{{item_2.title}}</div>
-                <div class="li-forminfo">
+                <div class="li-forminfo" style="margin-top: 16px;">
                   <template v-if="item_2.type==3">
-                    <el-input style="width: 120px" v-model="item_2.answer"></el-input>
+                    <el-input style="width: 120px;" v-model="item_2.answer"></el-input>
                   </template>
                   <template v-if="item_2.type==1">
                     <el-radio-group v-model="item_2.answer">
@@ -79,13 +82,15 @@
               </div>
             </div>
           </div>
+          </div>
         </el-col>
       </el-row>
     </div>
-    <el-dialog title="待填报内容" :visible.sync="showDialog" width="900px">
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px">
       <el-table
         :data="dataHasAnswerList"
         border
+        max-height="300"
         style="width: 100%;margin-bottom: 50px"
         size="small"
       >
@@ -100,13 +105,15 @@
         <el-table-column prop="subjStr"  header-align="center" align="center" label="已分配标题" ></el-table-column>
         <el-table-column prop="title" header-align="center" align="center" label="分配内容" >
           <template slot-scope="scope">
-            <div>请打开链接<el-link>www.XXXX.com</el-link>填报第{{scope.row.subjStr}}题的内容</div>
+            <div>{{scope.row.the_url}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="created_time" header-align="center" align="center" label="生成时间" />
         <el-table-column prop="title" header-align="center" align="center" label="操作" >
           <template slot-scope="scope">
-            <el-link type="warning" @click="">撤销</el-link>
+            <el-button type="text" @click="chexiao(scope.row)">撤销</el-button>
+            <span class="el-dropdown-links_line"></span>
+            <el-button type="text" style="margin-left: 20px" data-clipboard-action="copy" :data-clipboard-text="scope.row.the_url" :class="'tag-copy'+scope.row.id" @click="copyText(scope)">复制</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,20 +143,20 @@
       </div>
 
       <div slot="footer" class="dialog-footer">
-        <el-button @click="showDialogNext = false">取消</el-button>
-        <el-button type="primary" @click="fenpei">分配</el-button>
+        <el-button @click="showDialogNext = false">关闭</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
 
 <script>
-  import { questPreview ,savePreview,tempPreview,queryNotDistList,doDist,questShareList} from '@/api/AdataCenter'
-
+  import { questPreview ,savePreview,questPreviewByShare,tempPreview,queryNotDistList,doDist,questShareList,cancelDist,updSharePwd} from '@/api/AdataCenter'
+  import Clipboard from 'clipboard'
   export default {
     name: "AdataDetail",
     data() {
       return {
+        share_pwd:'',
         setPwd:'',
         switchRoles:1,
         showDialogNext:false,
@@ -164,7 +171,9 @@
         timer:null,
         requestDataId:'',
         choseAnswer:[],
+        fenpei_id:'',
         dataAnswerList:[],
+        sharePage:false,
         dataHasAnswerList:[],
         dataObject:{},
         edit:0,
@@ -185,23 +194,82 @@
       clearInterval(this.timer);
     },
     mounted() {
-      if(this.$route.query.org_id){
-        this.requestData={
-          "org_id": this.$route.query.org_id,
-          "que_id":  this.$route.query.que_id,
-          "temp_id":  this.$route.query.temp_id
+      if(this.$route.query.share_id){
+        this.sharePage=true
+        if(this.$route.query.pwd){
+          this.share_pwd=this.$route.query.pwd
         }
+        this.getShareInfo()
       }else{
-        this.requestDataId=this.$route.query.temp_id
+        if(this.$route.query.org_id){
+          this.requestData={
+            "org_id": this.$route.query.org_id,
+            "que_id":  this.$route.query.que_id,
+            "temp_id":  this.$route.query.temp_id
+          }
+        }else{
+          this.requestDataId=this.$route.query.temp_id
+        }
+        if(this.$route.query.edit){
+          this.edit=this.$route.query.edit
+        }
+        this.getDataList()
       }
-      if(this.$route.query.edit){
-        this.edit=this.$route.query.edit
-      }
-      this.getDataList()
+
     },
     methods: {
+      getShareInfo() {
+        let that = this
+        questPreviewByShare({
+          "requestData": {
+            pwd: this.share_pwd,
+            shareid: this.$route.query.share_id
+          }
+        }).then(res => {
+          res.data.subjList.forEach(item => {
+            let desc = []
+            if (item.desc) {
+              desc = item.desc.split('&&')
+            }
+            item.desc = desc
+            if (item.subjmxList) {
+              item.subjmxList.forEach(item_1 => {
+                if (item_1.type == 2) {
+                  if (item_1.answer) {
+                    item_1.answer = item_1.answer.split(',').map(Number)
+
+                  } else {
+                    item_1.answer = []
+                  }
+                }
+                if (item_1.answer) {
+                  if (item_1.type == 1) {
+                    item_1.answer = parseInt(item_1.answer)
+                  }
+                }
+              })
+            }
+          })
+          this.dataObject = res.data
+          this.timer = setInterval(function () {
+            that.difference(that.dataObject.etime)
+          }, 1000);
+        })
+
+      },
       setPwdFn(){
-        debugger
+        updSharePwd({
+          "requestData": {
+            id:this.fenpei_id,
+            pwd:this.setPwd,
+          }
+        }).then(res => {
+          this.showDialogNext=false
+          this.$message({
+            message: res.returnMsg,
+            type: 'success'
+          })
+        })
       },
       fenpei(){
         doDist({
@@ -212,9 +280,9 @@
             "subjStr": this.choseAnswer.toString()
           }
         }).then(res => {
-
           this.shareQuest()
           this.showDialogNext=true
+          this.fenpei_id=res.data.id
           this.$message({
             message: res.returnMsg,
             type: 'success'
@@ -233,6 +301,28 @@
         let checkedCount = value.length;
         this.checkAll = checkedCount === this.dataAnswerList.length;
         this.isIndeterminate = checkedCount > 0 && checkedCount < this.dataAnswerList.length;
+      },
+      copyText(scope){
+        let the_class='.tag-copy'+scope.row.id
+        let clipboard = new Clipboard(the_class);
+        clipboard.on('success', e => {
+          this.$message({ type: 'success', message: '复制成功' })
+          // 释放内存
+          clipboard.off('error')
+          clipboard.off('success')
+          clipboard.destroy()
+        })
+      },
+      chexiao(data){
+        cancelDist({
+          "requestData": data.id,
+        }).then(res => {
+          this.$message({
+            message: res.returnMsg,
+            type: 'success'
+          })
+          this.shareQuest()
+        })
       },
       difference(endTime) {
         let dateBegin = new Date();
@@ -261,6 +351,15 @@
             "publish_id":this.$route.query.que_id
           },
         }).then(res => {
+          res.data.forEach(item=>{
+            let the_url=''
+            if(item.pwd!=null){
+              the_url='请打开链接www.XXXX.com'+item.shareid+'填报第'+item.subjStr+'题的内容，查看密码为'+item.pwd
+            }else{
+              the_url='请打开链接www.XXXX.com'+item.shareid+'填报第'+item.subjStr+'题的内容'
+            }
+            item.the_url=the_url
+          })
           this.dataHasAnswerList=res.data
         })
         queryNotDistList({
@@ -301,13 +400,24 @@
           }
         })
         if(answerList.length>0){
-          savePreview({
-            requestData:{
-              answerList:answerList,
-              org_id:this.$route.query.org_id,
-              publish_id:this.$route.query.que_id,
-            } ,
-          }).then(res => {
+          let the_data={}
+          if(this.sharePage){
+            the_data={
+              requestData:{
+                answerList:answerList,
+                shareid:this.$route.query.share_id,
+              }
+            }
+          }else{
+            the_data={
+              requestData:{
+                answerList:answerList,
+                org_id:this.$route.query.org_id,
+                publish_id:this.$route.query.que_id,
+              }
+            }
+          }
+          savePreview(the_data).then(res => {
             this.$message({
               message: res.returnMsg,
               type: 'success'
@@ -397,12 +507,20 @@
         }
 
       },
+      goAnchor(selector) {
+        var anchor = this.$el.querySelector(selector)
+        console.log(anchor.offsetTop)
+        document.body.scrollTop = anchor.offsetTop-20; // chrome
+        document.documentElement.scrollTop = anchor.offsetTop-20; // firefox
+      },
       chose_activity(item, index) {
         this.chose_index = index
         this.dataObject.subjList.forEach(item => {
           item.color = '#B5B5B5'
         })
         this.dataObject.subjList[index].color = '#2375FE'
+        console.log('#herf_'+index)
+        this.goAnchor('#herf_'+parseInt(index+1))
       }
     }
   }
@@ -474,12 +592,15 @@
         .left-title {
           font-size: 14px;
           font-weight: bold;
-          width: 180px;
+          width: 240px;
           line-height: 20px;
-          margin-top: 130px;
+          position: fixed;
+          top: 150px;
+          height: calc( 100vh - 150px );
+          z-index: 300;
 
           .left-list {
-            width: 100%;
+            width: 98%;
             margin-top: 24px;
             border-top: 1px solid #E9EEF2;
             .herf_a{
@@ -488,48 +609,48 @@
           }
         }
 
-        .grid-title {
-          margin-top: 40px;
-          font-size: 20px;
-          margin-bottom: 32px;
-          font-weight: bold;
-          text-align: center;
-        }
+        /*.grid-title {*/
+          /*margin-top: 40px;*/
+          /*font-size: 20px;*/
+          /*margin-bottom: 32px;*/
+          /*font-weight: bold;*/
+          /*text-align: center;*/
+        /*}*/
 
-        .grid-org {
-          margin-bottom: 24px;
-          text-align: center;
-        }
+        /*.grid-org {*/
+          /*margin-bottom: 24px;*/
+          /*text-align: center;*/
+        /*}*/
 
-        .grid-disc {
-          text-indent: 36px;
-          line-height: 24px;
-          font-size: 18px;
-        }
-        .list-title{
-          font-weight: bold;
-        }
-        .list-desc {
-          margin-top: 16px;
-          color: #ccc;
-          font-size: 18px;
-          text-indent: 18px;
-          margin-bottom: 30px;
-          list-style-type: disc;
-        }
+        /*.grid-disc {*/
+          /*text-indent: 36px;*/
+          /*line-height: 24px;*/
+          /*font-size: 18px;*/
+        /*}*/
+        /*.list-title{*/
+          /*font-weight: bold;*/
+        /*}*/
+        /*.list-desc {*/
+          /*margin-top: 16px;*/
+          /*color: #ccc;*/
+          /*font-size: 18px;*/
+          /*text-indent: 18px;*/
+          /*margin-bottom: 30px;*/
+          /*list-style-type: disc;*/
+        /*}*/
 
-        .li-form {
-          margin-bottom: 32px;
-        }
+        /*.li-form {*/
+          /*margin-bottom: 32px;*/
+        /*}*/
 
-        .li-forminfo {
-          margin-top: 16px;
-        }
+        /*.li-forminfo {*/
+          /*margin-top: 16px;*/
+        /*}*/
 
-        .right-info-box {
-          /*height: 1600px;*/
-          /*overflow: auto;*/
-        }
+        /*.right-info-box {*/
+          /*!*height: 1600px;*!*/
+          /*!*overflow: auto;*!*/
+        /*}*/
       }
     }
   }

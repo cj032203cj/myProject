@@ -126,3 +126,24 @@ export function questShareList(data) {
     data
   })
 }
+export function cancelDist(data) {
+  return request({
+    url: '/questMgrService/cancelDist',
+    method: 'post',
+    data
+  })
+}
+export function updSharePwd(data) {
+  return request({
+    url: '/questMgrService/updSharePwd',
+    method: 'post',
+    data
+  })
+}
+export function questPreviewByShare(data) {
+  return request({
+    url: '/questMgrService/questPreviewByShare',
+    method: 'post',
+    data
+  })
+}
