@@ -64,20 +64,20 @@
                     <div>{{item_2.title}}</div>
                     <div class="li-forminfo" style="margin-top: 16px;">
                       <template v-if="item_2.type==3">
-                        <el-input style="width: 120px;" :disabled="requestDataId!=''||edit==0" v-model="item_2.answer"></el-input>
+                        <el-input style="width: 120px;" :disabled="(requestDataId!=''||edit==0)&&!sharePage" v-model="item_2.answer"></el-input>
                       </template>
                       <template v-if="item_2.type==1">
                         <el-radio-group v-model="item_2.answer">
-                          <el-radio v-for="item_3 in item_2.subjItems" :disabled="requestDataId!=''||edit==0" :label="item_3.id" class="mr-20">{{item_3.title}}</el-radio>
+                          <el-radio v-for="item_3 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0)&&!sharePage" :label="item_3.id" class="mr-20">{{item_3.title}}</el-radio>
                         </el-radio-group>
                       </template>
                       <template v-if="item_2.type==2">
                         <el-checkbox-group v-model="item_2.answer">
-                          <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems" :disabled="requestDataId!=''||edit==0" :label="item_4.id" :key="item_4.title">{{item_4.title}}</el-checkbox>
+                          <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0)&&!sharePage" :label="item_4.id" :key="item_4.title">{{item_4.title}}</el-checkbox>
                         </el-checkbox-group>
                       </template>
                       <template v-if="item_2.type==4">
-                        <el-input style="width: 360px" type="textarea" :disabled="requestDataId!=''||edit==0" v-model="item_2.answer"></el-input>
+                        <el-input style="width: 360px" type="textarea" :disabled="(requestDataId!=''||edit==0)&&!sharePage" v-model="item_2.answer"></el-input>
                       </template>
                     </div>
                   </div>
