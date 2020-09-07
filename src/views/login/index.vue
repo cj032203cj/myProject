@@ -76,27 +76,28 @@
             获取
           </span>
       </el-form-item>
-      <el-button :loading="loading" type="primary" class="login-btn next-btn" @click="toChange">下一步</el-button>
+      <el-button :loading="loading" type="primary" :disabled="!can_click&&!form.pwd" class="login-btn next-btn" @click="toChange">下一步</el-button>
       <div class="sm-rsy"></div>
     </el-form>
     <el-dialog title="忘记密码" :visible.sync="showDialog" width="500px">
       <el-form ref="form" :model="formNew" :rules="rules" label-width="100px">
         <el-form-item label="新密码" prop="psd">
-          <el-input v-model="formNew.psd" type="password" auto-complete="new-password" placeholder="请输入新密码" style="width: 300px" ></el-input>
+          <el-input v-model="formNew.psd" type="password" auto-complete="new-password" placeholder="请输入新密码" style="width: 300px;color: #000" ></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="new_psd" >
-          <el-input v-model="formNew.new_psd" type="password" auto-complete="new-password" placeholder="请输入新密码"  style="width: 300px" ></el-input>
+          <el-input v-model="formNew.new_psd" type="password" auto-complete="new-password" placeholder="请输入新密码"  style="width: 300px;color: #000" ></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="showDialog = false">取消修改</el-button>
-        <el-button type="primary">确认修改</el-button>
+        <el-button type="primary" @click="confirmPwd">确认修改</el-button>
       </div>
     </el-dialog>
     <slide-verify
       v-if="show_yzm"
       class="slide-box"
       ref="slideblock"
+      :imgs="imgArray"
       @again="onAgain"
       @fulfilled="onFulfilled"
       @success="onSuccess"
@@ -109,15 +110,20 @@
 </template>
 
 <script>
-import {updPwd} from '@/api/AdataCenter'
+import {updPwd,verificationCode,forgetPwdStep1,forgetPwdStep2} from '@/api/AdataCenter'
+import img0 from '../../assets/imgs/img.jpg'
+import img1 from '../../assets/imgs/img1.jpg'
+import img2 from '../../assets/imgs/img2.jpg'
+import img3 from '../../assets/imgs/img3.jpg'
+import img4 from '../../assets/imgs/img4.jpg'
+import img5 from '../../assets/imgs/img5.jpg'
 export default {
   name: 'Login',
   data() {
     var validatePhone = (rule, value, callback) => {
-      debugger
       let reg=/^1[3|4|5|7|8][0-9]{9}$/
       if (!reg.test(value)) {
-        callback(new Error('请输入正确的手机号格式'))
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
@@ -128,12 +134,16 @@ export default {
           { validator: validatePhone, trigger: 'blur' }
         ]
       },
-      formNew:{},
+      formNew:{
+        psd:'',
+        new_psd:'',
+      },
       form:{
         phone:'',
         pwd:''
       },
       isLogin:true,
+      imgArray:[img0,img1,img2,img4,img3,img5],
       loginForm: {
         username: 'admin',
         password: 'admin'
@@ -153,7 +163,8 @@ export default {
       // 精确度小，可允许的误差范围小；为1时，则表示滑块要与凹槽完全重叠，才能验证成功。默认值为5
       accuracy: 1,
       show_yzm:false,
-      can_click:false
+      can_click:false,
+      his_id:''
     }
   },
   watch: {
@@ -182,10 +193,43 @@ export default {
     // window.removeEventListener('storage', this.afterQRScan)
   },
   methods: {
+    confirmPwd(){
+      forgetPwdStep2({
+        requestData: {
+          new_pwd:this.formNew.psd,
+          id:this.his_id,
+          confirm_pwd:this.formNew.new_psd,
+        }
+      }).then(res => {
+        this.$message({ message: res.returnMsg, type: 'success' })
+        this.can_click=false
+        this.showDialog=false
+        this.isLogin=true
+      })
+    },
+    toChange(){
+      forgetPwdStep1({
+        requestData: {
+          "phone_num": this.form.phone,
+          "verifCode": this.form.pwd
+        }
+      }).then(res => {
+        this.his_id=res.data.id
+        this.formNew={
+          new_psd:'',
+          psd:''
+        }
+        this.showDialog=true
+      })
+    },
     onSuccess(){
-      this.$message({ message: '验证通过，正在发送短信码', type: 'success' })
-      this.can_click=true
-      this.show_yzm=false
+      verificationCode({
+        requestData: this.form.phone
+      }).then(res => {
+        this.$message({ message: '验证通过，正在发送短信码', type: 'success' })
+        this.can_click=true
+        this.show_yzm=false
+      })
     },
     onFail(){
       this.$message({ message: '验证失败', type: 'error' })
@@ -207,12 +251,18 @@ export default {
       // 父组件直接可以调用刷新方法
       this.$refs.slideblock.reset();
     },
-    toChange(){
-      this.showDialog=true
-    },
+
     getPic(){
-      this.show_yzm=true
-      this.can_click=false
+      this.$refs.fogForm.validate(valid => {
+        if (valid) {
+          this.show_yzm=true
+          this.can_click=false
+        }else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+
     },
     checkCapslock(e) {
       const { key } = e
@@ -228,24 +278,7 @@ export default {
         this.$refs.password.focus()
       })
     },
-    confirmPhone(){
-      if(this.can_click){
-        this.$refs.fogForm.validate(valid => {
-          if (valid) {
-            debugger
-          }else {
-            console.log('error submit!!')
-            return false
-          }
-        })
-      }else{
-        this.$message({
-          message: '请通过滑动验证',
-          type: 'success'
-        })
-      }
 
-    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -291,7 +324,6 @@ $cursor: #fff;
 
 @supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
   .login-container .el-input input {
-    color: $cursor;
   }
 }
 

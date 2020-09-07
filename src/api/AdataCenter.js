@@ -147,3 +147,31 @@ export function questPreviewByShare(data) {
     data
   })
 }
+export function verificationCode(data) {
+  return request({
+    url: '/accountService/verificationCode',
+    method: 'post',
+    data
+  })
+}
+export function forgetPwdStep1(data) {
+  return request({
+    url: '/accountService/forgetPwdStep1',
+    method: 'post',
+    data
+  })
+}
+export function forgetPwdStep2(data) {
+  return request({
+    url: '/accountService/forgetPwdStep2',
+    method: 'post',
+    data
+  })
+}
+export function questShareinfo(data) {
+  return request({
+    url: '/questMgrService/questShareinfo',
+    method: 'post',
+    data
+  })
+}
