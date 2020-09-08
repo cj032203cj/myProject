@@ -13,7 +13,7 @@
         <el-form-item>
           <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
           <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
-<!--          <el-button type="primary" @click="getDataList()">新建</el-button>-->
+          <el-button type="primary" plain @click="addOrUpdateHandle_new">新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -55,6 +55,7 @@
       <el-form ref="form" :model="form" :rules="rules">
         <el-form-item label="截至日期：" prop="etime">
           <el-date-picker
+            :picker-options='pickerBeginDateBefore'
             v-model="form.etime"
             type="datetime"
             placeholder="选择日期时间">
@@ -67,26 +68,61 @@
         <el-button type="primary" @click="confirm">保 存</el-button>
       </div>
     </el-dialog>
+    <el-dialog title="新增" :visible.sync="dialogVisible" width="400px">
+      <el-form ref="form_new" :model="form_new" :rules="rules_new"  label-width="100px">
+        <el-form-item label="模板：" prop="template">
+          <el-select v-model="form_new.template" placeholder="请选择模板">
+            <el-option v-for="item in tempList" :key="item.id" :label="item.title" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="截止时间：" prop="eTime">
+          <el-date-picker
+            :picker-options='pickerBeginDateBefore'
+            v-model="form_new.etime"
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="部门：" prop="dept_name">
+          <el-input v-model="form_new.dept_name" style="width:200px" disabled></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="confirm_new">保 存</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-  import {questDistList,questHsp,doPublish}from '@/api/AdataCenter'
+  import {questDistList,questHsp,doPublish,addTem,queryTemp}from '@/api/AdataCenter'
   import moment from 'moment';
   export default {
     name: 'AtempAssign',
     data() {
       return {
-        form:{
-          value:[]
+        pickerBeginDateBefore:{
+          disabledDate(time){
+            return time.getTime() < Date.now()-8.64e7   //如果当天可选，就不用减8.64e7
+          }
         },
-        leftRight:["一键全选","一键全选"],
+        form:{
+          value:[],
+          dept_name:'药水部'
+        },
+        leftRight:["未分配医院","分配医院"],
         data: [],
         dialogFormVisible:false,
+        dialogVisible:false,
         dataForm: {
           title: '',
           dept_name:''
         },
+        rules_new:{
+          etime:[
+            { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
+        ]},
         rules:{
           etime:[
             { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
@@ -97,13 +133,25 @@
         pageSize: 10,
         totalPage: 0,
         dataListLoading: false,
-        publish_id:''
+        publish_id:'',
+        tempList:[],
+        form_new:{}
       }
     },
     mounted() {
       this.getDataList()
     },
     methods: {
+      confirm_new(){
+        this.$refs['form_new'].validate((valid) => {
+          if (valid) {
+              this.confirmHttp_new()
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+      },
       confirm(){
         if(this.form.value.length==0){
           this.$message({
@@ -130,7 +178,31 @@
         });
 
       },
+      confirmHttp_new(){
+        if (this.form_new.etime.getTime() < new Date().getTime()) {
+          this.$message('截止时间必须大于当前时间')
+          return false
+        }
+        addTem({
+          requestData: {
+            "etime": moment(this.form_new.etime).format("YYYY-MM-DD HH:MM:SS"),
+            "dept_name": this.form_new.dept_name,
+            "temp_id": this.form_new.template
+          },
+        }).then(res => {
+          this.$message({
+            message: res.returnMsg,
+            type: 'success'
+          })
+          this.dialogVisible=false
+          this.getDataList()
+        })
+      },
       confirmHttp(){
+        if (this.form.etime.getTime() < new Date().getTime()) {
+          this.$message('截止时间必须大于当前时间')
+          return false
+        }
         doPublish({
           requestData: {
             "etime": moment(this.form.etime).format("YYYY-MM-DD HH:MM:SS"),
@@ -146,6 +218,10 @@
           this.getDataList()
         })
       },
+      addOrUpdateHandle_new(){
+        this.dialogVisible=true
+        this.getTempList()
+      },
       addOrUpdateHandle(data){
         this.form={
           etime:data.etime?new Date(data.etime):'',
@@ -154,6 +230,16 @@
         this.publish_id = data.id
         this.dialogFormVisible=true
         this.questHspFn(data.contentId)
+      },
+      getTempList(){
+        queryTemp({
+          requestData: {
+          }
+        }).then(res => {
+          this.tempList=res.data.pageData
+          this.form_new.dept_name=res.data.pageData[0].dept_name
+          this.form_new.template=res.data.pageData[0].id
+        })
       },
       questHspFn(data){
         let that = this

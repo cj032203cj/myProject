@@ -175,3 +175,17 @@ export function questShareinfo(data) {
     data
   })
 }
+export function addTem(data) {
+  return request({
+    url: '/questMgrService/add',
+    method: 'post',
+    data
+  })
+}
+export function queryTemp(data) {
+  return request({
+    url: '/tempService/query',
+    method: 'post',
+    data
+  })
+}

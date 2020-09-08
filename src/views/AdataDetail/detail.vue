@@ -121,7 +121,9 @@
           <template slot-scope="scope">
             <el-button type="text" @click="chexiao(scope.row)">撤销</el-button>
             <span class="el-dropdown-links_line"></span>
-            <el-button type="text" style="margin-left: 20px" data-clipboard-action="copy" :data-clipboard-text="scope.row.the_url" :class="'tag-copy'+scope.row.id" @click="copyText(scope)">复制</el-button>
+            <el-button type="text" style="margin-left: 20px;margin-right: 20px" data-clipboard-action="copy" :data-clipboard-text="scope.row.the_url" :class="'tag-copy'+scope.row.id" @click="copyText(scope)">复制</el-button>
+            <span class="el-dropdown-links_line"></span>
+            <el-button type="text" @click="setThisPwd(scope.row)">设置密码</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -136,7 +138,7 @@
         <el-button type="primary" @click="fenpei">分配</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="查看权限" :visible.sync="showDialogNext">
+    <el-dialog title="设置密码" :visible.sync="showDialogNext">
       <el-radio-group v-model="switchRoles">
         <el-radio :label="1">
           所有人
@@ -280,6 +282,13 @@
         this.getShareInfo()
       },
       setPwdFn(){
+        if(!this.setPwd){
+          this.$message({
+            message: '请先输入密码',
+            type: 'info'
+          })
+          return
+        }
         updSharePwd({
           "requestData": {
             id:this.fenpei_id,
@@ -291,6 +300,7 @@
             message: res.returnMsg,
             type: 'success'
           })
+          this.shareQuest()
         })
       },
       fenpei(){
@@ -303,12 +313,12 @@
           }
         }).then(res => {
           this.shareQuest()
-          this.showDialogNext=true
-          this.fenpei_id=res.data.id
+          this.choseAnswer=[]
           this.$message({
             message: res.returnMsg,
             type: 'success'
           })
+
         })
       },
       handleCheckAllChange(val) {
@@ -334,6 +344,17 @@
           clipboard.off('success')
           clipboard.destroy()
         })
+      },
+      setThisPwd(data){
+        this.showDialogNext=true
+        this.setPwd=''
+        if(data.pwd){
+          this.setPwd=data.pwd
+          this.switchRoles=2
+        }else{
+          this.switchRoles=1
+        }
+        this.fenpei_id=data.id
       },
       chexiao(data){
         cancelDist({
