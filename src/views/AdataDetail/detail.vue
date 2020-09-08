@@ -91,7 +91,7 @@
         :data="dataHasAnswerList"
         border
         max-height="300"
-        style="width: 100%;margin-bottom: 50px"
+        style="width: 100%;margin-bottom: 20px"
         size="small"
       >
         <el-table-column prop="percentage" header-align="center" align="center" label="完成度" >
@@ -537,7 +537,7 @@
 <style scoped lang="scss">
   .detail {
     height: 100vh;
-    width: 100vw;
+    width: 100%;
     background: #fff;
     /*overflow: hidden;*/
     .mr-20{
