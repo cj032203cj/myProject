@@ -106,8 +106,7 @@
           <template slot-scope="scope">
             <div class="less-height">
               <el-progress type="circle" size="small" :percentage="scope.row.percentage"></el-progress>
-
-            </div>
+              </div>
           </template>
         </el-table-column>
         <el-table-column prop="subjStr"  header-align="center" align="center" label="已分配标题" ></el-table-column>
@@ -207,7 +206,6 @@
     mounted() {
       if(this.$route.query.share_id){
         this.sharePage=true
-
         this.getInfoNeedPws()
       }else{
         if(this.$route.query.org_id){
@@ -246,7 +244,11 @@
             shareid: this.$route.query.share_id
           }
         }).then(res => {
-          this.needPwd=false
+          if(new Date(res.data.etime).getTime()<new Date().getTime()){
+            this.$message({ message: '该调查表已过期', type: 'info' })
+          }else{
+            this.needPwd=false
+          }
           res.data.subjList.forEach(item => {
             let desc = []
             if (item.desc) {

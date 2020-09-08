@@ -289,7 +289,11 @@ export default {
                 message: res.returnMsg,
                 type: 'success'
               })
-              this.$router.push({ path: '/', query: this.otherQuery })
+              if(res.data.orginfo.role_code=='admin'){
+                this.$router.push({ path: '/'})
+              }else if(res.data.orginfo.role_code=='user'){
+                this.$router.push({ path: '/AmyFill'})
+              }
               this.loading = false
             })
             .catch((res) => {

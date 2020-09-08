@@ -26,8 +26,9 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
-          <div v-if="scope.row.status==1">未提交</div>
-          <div v-if="scope.row.status==2">已提交</div>
+          <el-tag type="success" v-if="!scope.row.isOver&&scope.row.status==2">已提交</el-tag>
+          <el-tag type="warning" v-if="!scope.row.isOver&&scope.row.status==1">未提交</el-tag>
+          <el-tag type="danger" v-if="scope.row.isOver">已过期</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -44,7 +45,7 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row)">去填报</el-button>
+          <el-button type="text" size="small" v-if="!scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">去填报</el-button>
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
       </el-table-column>
@@ -107,6 +108,13 @@
             dept_name: this.dataForm.dept_name,
           },
         }).then(res => {
+          res.data.pageData.forEach(item=>{
+            if(new Date(item.etime).getTime()<new Date().getTime()){
+              item.isOver=true
+            }else{
+              item.isOver=false
+            }
+          })
           this.dataList=res.data.pageData
           this.totalPage=res.data.totalSize
         })

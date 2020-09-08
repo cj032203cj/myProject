@@ -53,31 +53,46 @@ export const constantRoutes = [
     component: () => import('@/views/login/index'),
     hidden: true
   },
+
+  // {
+  //   path: '/',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   hidden:false,
+  //   children: [
+  //     {
+  //       path: 'dashboard',
+  //       component: () => import('@/views/dashboard/index'),
+  //       name: 'Dashboard',
+  //       meta: {title: '首页', icon: 'dashboard', affix: false}
+  //     }
+  //   ]
+  // },
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
-    hidden:false,
+    redirect: '/AdataCenter',
+    permission:'admin',
     children: [
       {
-        path: 'dashboard',
-        component: () => import('@/views/dashboard/index'),
-        name: 'Dashboard',
-        meta: {title: '首页', icon: 'dashboard', affix: false}
+        path: 'AdataCenter',
+        component: () => import('@/views/AdataCenter/index'),
+        name: 'AdataCenter',
+        meta: {title: '数据中心', icon: 'table', noCache: true},
       }
     ]
   },
   {
-    path: '/AdataCenter',
+    path: '/AmyFill',
     component: Layout,
-    redirect: '/AdataCenter/index',
-    permission:'admin',
+    redirect: '/AmyFill',
+    permission:'user',
     children: [
       {
-        path: 'index',
-        component: () => import('@/views/AdataCenter/index'),
-        name: 'AdataCenter',
-        meta: {title: '数据中心', icon: 'table', noCache: true},
+        path: '/AmyFill',
+        component: () => import('@/views/AmyFill/index'),
+        name: 'AmyFill',
+        meta: {title: '我的填报', icon: 'edit', noCache: true}
       }
     ]
   },
@@ -130,20 +145,20 @@ export const constantRoutes = [
       }
     ]
   },
-  {
-    path: '/AmyFill',
-    component: Layout,
-    redirect: '/AmyFill/index',
-    permission:'user',
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/views/AmyFill/index'),
-        name: 'AmyFill',
-        meta: {title: '我的填报', icon: 'edit', noCache: true}
-      }
-    ]
-  },
+  // {
+  //   path: '/AmyFill',
+  //   component: Layout,
+  //   redirect: '/AmyFill/index',
+  //   permission:'user',
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       component: () => import('@/views/AmyFill/index'),
+  //       name: 'AmyFill',
+  //       meta: {title: '我的填报', icon: 'edit', noCache: true}
+  //     }
+  //   ]
+  // },
 ]
 
 /**

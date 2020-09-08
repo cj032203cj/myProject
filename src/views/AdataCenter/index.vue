@@ -34,8 +34,9 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
-          <div v-if="scope.row.status==2">已填报</div>
-          <div v-if="scope.row.status==1">未填报</div>
+          <el-tag type="success" v-if="!scope.row.isOver&&scope.row.status==2">已提交</el-tag>
+          <el-tag type="warning" v-if="!scope.row.isOver&&scope.row.status==1">未提交</el-tag>
+          <el-tag type="danger" v-if="scope.row.isOver">已过期</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -120,6 +121,13 @@ export default {
          pageSize: this.pageSize,
         },
     }).then(res => {
+        res.data.pageData.forEach(item=>{
+          if(new Date(item.etime).getTime()<new Date().getTime()){
+            item.isOver=true
+          }else{
+            item.isOver=false
+          }
+        })
         this.dataList=res.data.pageData
         this.totalPage=res.data.totalSize
       })
