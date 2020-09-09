@@ -37,7 +37,7 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
               <template slot-scope="scope">
-                <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row)">分配</el-button>
+                <el-button type="text" size="small" :disabled="scope.row.isOver" :title="scope.row.isOver?'已过期':'分配'"  @click="addOrUpdateHandle(scope.row)">分配</el-button>
               </template>
             </el-table-column>
     </el-table>
@@ -281,6 +281,11 @@
           },
         }).then(res => {
           res.data.pageData.forEach(item=>{
+              if(new Date(item.etime).getTime()<new Date().getTime()){
+                item.isOver=true
+              }else{
+                item.isOver=false
+              }
             if(item.orgList!=null&&item.orgList.length>0){
               let contentName=[]
               let contentId=[]

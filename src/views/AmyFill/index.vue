@@ -26,9 +26,8 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
-          <el-tag type="success" v-if="!scope.row.isOver&&scope.row.status==2">已提交</el-tag>
-          <el-tag type="warning" v-if="!scope.row.isOver&&scope.row.status==1">未提交</el-tag>
-          <el-tag type="danger" v-if="scope.row.isOver">已过期</el-tag>
+          <el-tag type="success" v-if="scope.row.status==2">已填报</el-tag>
+          <el-tag type="warning" v-if="scope.row.status==1">未填报</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -45,7 +44,8 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" v-if="!scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">去填报</el-button>
+          <el-link type="success" size="small" v-if="scope.row.percentage!=100"  @click="addOrUpdateHandle(scope.row)">去填报</el-link>
+          <el-link type="primary" size="small" v-else  @click="addOrUpdateHandle(scope.row)">已填报</el-link>
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
       </el-table-column>
@@ -120,17 +120,31 @@
         })
       },
       addOrUpdateHandle(data){
-        this.$router.push(
-          {
-            path:'/AdataDetail',
-            query: {
-              "org_id": data.org_id,
-              "que_id":  data.que_id,
-              "temp_id":  data.temp_id,
-              edit:1
+        if(data.isOver){
+          this.$router.push(
+            {
+              path:'/AdataDetail',
+              query: {
+                "org_id": data.org_id,
+                "que_id":  data.que_id,
+                "temp_id":  data.temp_id,
+              }
             }
-          }
-        )
+          )
+        }else{
+          this.$router.push(
+            {
+              path:'/AdataDetail',
+              query: {
+                "org_id": data.org_id,
+                "que_id":  data.que_id,
+                "temp_id":  data.temp_id,
+                edit:1
+              }
+            }
+          )
+        }
+
       },
       // 每页数
       sizeChangeHandle(val) {

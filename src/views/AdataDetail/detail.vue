@@ -13,12 +13,14 @@
               <div style="visibility: hidden" v-else>none</div>
             </el-col>
             <el-col :span="7" class="right-text">
-              <div>
-                <el-button type="info" v-if="edit==1" @click="back" size="small">返回</el-button>
-                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
-                <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="'#printTest'" style="margin-left: 20px" >打印</el-button>
-                <el-button type="primary" size="small" v-if="(!requestDataId&&edit==1)||sharePage" style="margin-left: 20px" @click="answer" >提交</el-button>
-              </div>
+
+
+                <el-button type="info" v-if="edit==1" @click.stop.prevent="back" size="small">返回</el-button>
+                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit" type="primary" size="small" style="margin-left: 20px" @click.stop.prevent="shareQuest">分配</el-button>
+                <div style="display: inline-block;margin-left: 20px">
+                  <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="printObj">打印</el-button>
+                </div>
+                <el-button type="primary" size="small" v-if="(!requestDataId&&edit==1)||sharePage" style="margin-left: 20px" @click.stop.prevent="answer" >提交</el-button>
             </el-col>
           </el-row>
         </div>
@@ -46,7 +48,7 @@
             <div style="visibility: hidden">none</div>
           </el-col>
           <el-col :span="requestDataId||sharePage?24:16" class="right-info-box">
-            <div id="printTest">
+            <div id="printMe">
               <div>
                 <div class="grid-title" style="margin-top: 40px;font-size: 20px; margin-bottom: 32px;font-weight: bold;text-align: center;">{{dataObject.title}}</div>
                 <div class="grid-org" style="margin-bottom: 24px;text-align: center;">{{dataObject.dept_name}}</div>
@@ -55,7 +57,7 @@
                 </div>
               </div>
               <div style="margin-top: 40px" v-for="(item_0,index_0) in dataObject.subjList">
-                <div class="list-title" style="font-weight: bold" :id="'herf_'+item_0.id">{{parseInt(index_0+1)}}.{{item_0.title}}</div>
+                <div class="list-title" style="font-weight: bold" :id="'herf_'+index_0">{{parseInt(index_0+1)}}.{{item_0.title}}</div>
                 <ul>
                   <li class="list-desc" style="margin-top: 16px;color: #ccc;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
                 </ul>
@@ -165,6 +167,11 @@
     name: "AdataDetail",
     data() {
       return {
+        printObj:{
+          id:"printMe",
+          popTitle:'打印模板',
+          extraHead:''
+        },
         share_pwd:'',
         setPwd:'',
         switchRoles:1,
@@ -572,8 +579,8 @@
           item.color = '#B5B5B5'
         })
         this.dataObject.subjList[index].color = '#2375FE'
-        console.log('#herf_'+index)
-        this.goAnchor('#herf_'+parseInt(index+1))
+        console.log('#herf_'+parseInt(index+1))
+        this.goAnchor('#herf_'+parseInt(index))
       }
     }
   }
@@ -711,5 +718,19 @@
   .active_color {
     color: #1F72FA;
   }
+  /*去除页眉页脚*/
+  @page{
+    size:  auto;   /* auto is the initial value */
+    margin: 3mm;  /* this affects the margin in the printer settings */
+  }
 
+  html{
+    background-color: #FFFFFF;
+    margin: 0;  /* this affects the margin on the html before sending to printer */
+  }
+
+  body{
+    border: solid 1px blue ;
+  }
+  /*去除页眉页脚*/
 </style>
