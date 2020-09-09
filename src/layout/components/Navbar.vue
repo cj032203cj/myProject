@@ -10,11 +10,12 @@
 
 <!--        <error-log class="errLog-container right-menu-item hover-effect" />-->
 
-        <screenfull id="screenfull" class="right-menu-item hover-effect" />
+<!--        <screenfull id="screenfull" class="right-menu-item hover-effect" />-->
 
-        <el-tooltip content="切换文本大小" effect="dark" placement="bottom">
-          <size-select id="size-select" class="right-menu-item hover-effect" />
-        </el-tooltip>
+<!--        <el-tooltip content="
+" effect="dark" placement="bottom">-->
+<!--          <size-select id="size-select" class="right-menu-item hover-effect" />-->
+<!--        </el-tooltip>-->
 
       </template>
 
@@ -220,14 +221,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
+  height: 70px;
   overflow: hidden;
   position: relative;
   background: #fff;
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
-    line-height: 46px;
+    line-height: 66px;
     height: 100%;
     float: left;
     cursor: pointer;
@@ -251,7 +252,7 @@ export default {
   .right-menu {
     float: right;
     height: 100%;
-    line-height: 50px;
+    line-height: 70px;
 
     &:focus {
       outline: none;
@@ -279,7 +280,6 @@ export default {
       margin-right: 30px;
 
       .avatar-wrapper {
-        margin-top: 5px;
         position: relative;
 
         .user-avatar {
@@ -293,7 +293,7 @@ export default {
           cursor: pointer;
           position: absolute;
           right: -20px;
-          top: 25px;
+          top: 30px;
           font-size: 12px;
         }
       }

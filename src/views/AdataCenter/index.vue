@@ -34,9 +34,8 @@
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
       <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
         <template slot-scope="scope">
-          <el-tag type="success" v-if="!scope.row.isOver&&scope.row.status==2">已提交</el-tag>
-          <el-tag type="warning" v-if="!scope.row.isOver&&scope.row.status==1">未提交</el-tag>
-          <el-tag type="danger" v-if="scope.row.isOver">已过期</el-tag>
+          <el-tag type="success" v-if="scope.row.status==2">已提交</el-tag>
+          <el-tag type="warning" v-if="scope.row.status==1">未提交</el-tag>
         </template>
       </el-table-column>
       <el-table-column
