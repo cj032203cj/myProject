@@ -9,14 +9,14 @@
             </el-col>
             <el-col  :span="8" class="middle-text" style="">
               <div v-if="!requestDataId" class="div1">填报截止日期：{{dataObject.etime }}</div>
-              <div v-if="!requestDataId" class="div2">剩余填报时间：{{timeDiff}}</div>
+              <div v-if="!requestDataId&&has_time" class="div2">剩余填报时间：{{timeDiff}}</div>
               <div style="visibility: hidden" v-else>none</div>
             </el-col>
             <el-col :span="7" class="right-text">
               <div>
                 <el-button type="info" v-if="edit==1" @click="back" size="small">返回</el-button>
-                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
-                <el-button icon="el-icon-printer" v-if="requestDataId&&!sharePage" type="primary" size="small" v-print="'#printTest'" style="margin-left: 20px" >打印</el-button>
+                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit" type="primary" size="small" style="margin-left: 20px" @click="shareQuest">分配</el-button>
+                <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="'#printTest'" style="margin-left: 20px" >打印</el-button>
                 <el-button type="primary" size="small" v-if="(!requestDataId&&edit==1)||sharePage" style="margin-left: 20px" @click="answer" >提交</el-button>
               </div>
             </el-col>
@@ -57,7 +57,7 @@
               <div style="margin-top: 40px" v-for="(item_0,index_0) in dataObject.subjList">
                 <div class="list-title" style="font-weight: bold" :id="'herf_'+item_0.id">{{parseInt(index_0+1)}}.{{item_0.title}}</div>
                 <ul>
-                  <li class="list-desc" style="margin-top: 16px;color: #ccc;font-size: 18px;text-indent: 18px;margin-bottom: 30px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
+                  <li class="list-desc" style="margin-top: 16px;color: #ccc;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
                 </ul>
                 <div>
                   <div v-for="(item_2,index_2) in item_0.subjmxList" :key="index_2" class="li-form" style="margin-bottom: 32px">
@@ -188,6 +188,7 @@
         edit:0,
         needPwd:false,
         timeDiff:'',
+        has_time:false,
         activities: [{
           content: '1.活动按期开始活动按期开始活动活开始',
           color: '#B5B5B5'
@@ -370,19 +371,26 @@
         })
       },
       difference(endTime) {
+        let that = this
         let dateBegin = new Date();
         let dateEnd = new Date(endTime);
         let dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
-        let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
-        let leave1 = dateDiff % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
-        let hours = Math.floor(leave1 / (3600 * 1000));//计算出小时数
-        //计算相差分钟数
-        let leave2 = leave1 % (3600 * 1000);   //计算小时数后剩余的毫秒数
-        let minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
-        //计算相差秒数
-        let leave3 = leave2 % (60 * 1000);     //计算分钟数后剩余的毫秒数
-        let seconds = Math.round(leave3 / 1000);
-        this.timeDiff=dayDiff + "天 " + hours + "小时 " + minutes + "分"
+        if(dateDiff>0){
+          this.has_time=true
+          let dayDiff = Math.floor(dateDiff / (24 * 3600 * 1000));//计算出相差天数
+          let leave1 = dateDiff % (24 * 3600 * 1000);    //计算天数后剩余的毫秒数
+          let hours = Math.floor(leave1 / (3600 * 1000));//计算出小时数
+          //计算相差分钟数
+          let leave2 = leave1 % (3600 * 1000);   //计算小时数后剩余的毫秒数
+          let minutes = Math.floor(leave2 / (60 * 1000)); //计算相差分钟数
+          //计算相差秒数
+          let leave3 = leave2 % (60 * 1000);     //计算分钟数后剩余的毫秒数
+          let seconds = Math.round(leave3 / 1000);
+          this.timeDiff=dayDiff + "天 " + hours + "小时 " + minutes + "分"
+        }else{
+          this.has_time=false
+          clearInterval(that.timer)
+        }
       },
       back(){
         this.$router.go(-1)

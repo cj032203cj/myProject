@@ -47,7 +47,7 @@ service.interceptors.response.use(
 
     // if the custom code is not 20000, it is judged as an error.
     if (res.returnCode != 0) {
-      if (res.returnMsg === '接口调用失败,token值无效' || res.returnCode === 50012 || res.returnCode === 50014) {
+      if (res.returnMsg === '接口调用失败,token值无效') {
         // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
         // to re-login
         MessageBox.confirm('登录信息失效请重新登录', '提示信息', {
