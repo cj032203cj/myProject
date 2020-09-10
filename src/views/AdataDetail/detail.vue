@@ -101,7 +101,7 @@
       <el-table
         :data="dataHasAnswerList"
         border
-        max-height="300"
+        max-height="250"
         style="width: 100%;margin-bottom: 20px"
         size="small"
       >
