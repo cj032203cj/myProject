@@ -8,8 +8,8 @@
           </el-form-item>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="getDataList()">查询</el-button>
+          <el-button icon="el-icon-refresh-right" @click="reset()">重置</el-button>
           <el-button type="primary" plain @click="addOrUpdateHandle">新增</el-button>
         </el-form-item>
       </el-form>
@@ -26,9 +26,9 @@
       <el-table-column prop="login_name" header-align="center" align="center" label="用户名" />
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-button type="text" size="small" @click="share(scope.row)">分享</el-button>
-          <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row)">编辑</el-button>
-          <el-button type="text" size="small" @click="del(scope.row)">删除</el-button>
+          <el-link type="primary" size="small" @click="share(scope.row)" style="margin-right: 15px">分享</el-link>
+          <el-link type="primary" size="small" @click="addOrUpdateHandle(scope.row)" style="margin-right: 15px">编辑</el-link>
+          <el-link type="danger" size="small" @click="del(scope.row)">删除</el-link>
           <!--          <span class="el-dropdown-links"></span>-->
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
@@ -89,7 +89,7 @@ export default {
   data() {
     return {
       the_org:'',
-      all_url:'欢迎贵医院（{{the_org}}）加入医疗质控中心，您可以凭借用户名：{{the_user}}，默认密码密码：qcc123456,登录中心平台：{{website}}',
+      all_url:'',
       the_user:'',
       website:'www.xxxxxx.com',
       dialogVisible:false,
@@ -126,7 +126,14 @@ export default {
     }
   },
   mounted() {
-    this.getDataList()
+    if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+      this.$router.replace({
+        path:'/AmyFill'
+      })
+    }else{
+      this.getDataList()
+
+    }
   },
   methods: {
     reset(){
@@ -192,7 +199,7 @@ export default {
     share(data){
       this.the_org=data.org_name
       this.the_user=data.login_name
-      this.all_url='欢迎贵医院（'+data.org_name+'）加入医疗质控中心，您可以凭借用户名：'+data.login_name+'，默认密码密码：qcc123456,登录中心平台：'+this.website
+      this.all_url='欢迎贵医院（'+data.org_name+'）加入医疗质控中心，您可以凭借用户名：'+data.login_name+'，默认密码密码：qcc123456,登录中心平台：'+window.location.href.split('#/')[0]
       this.dialogVisible=true
     },
     // 每页数

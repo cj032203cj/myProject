@@ -67,7 +67,14 @@
       }
     },
     mounted() {
-      this.getDataList()
+      if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+        this.$router.replace({
+          path:'/AmyFill'
+        })
+      }else{
+        this.getDataList()
+
+      }
     },
     methods: {
       reset(){

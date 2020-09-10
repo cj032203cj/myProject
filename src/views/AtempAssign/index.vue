@@ -139,7 +139,14 @@
       }
     },
     mounted() {
-      this.getDataList()
+      if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+        this.$router.replace({
+          path:'/AmyFill'
+        })
+      }else{
+        this.getDataList()
+
+      }
     },
     methods: {
       confirm_new(){
@@ -183,9 +190,10 @@
           this.$message('截止时间必须大于当前时间')
           return false
         }
+        debugger
         addTem({
           requestData: {
-            "etime": moment(this.form_new.etime).format("YYYY-MM-DD HH:MM:SS"),
+            "etime": moment(this.form_new.etime).format("YYYY-MM-DD HH:mm:ss"),
             "dept_name": this.form_new.dept_name,
             "temp_id": this.form_new.template
           },

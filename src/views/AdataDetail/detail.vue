@@ -15,8 +15,8 @@
             <el-col :span="7" class="right-text">
 
 
-                <el-button type="info" v-if="edit==1" @click.stop.prevent="back" size="small">返回</el-button>
-                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit" type="primary" size="small" style="margin-left: 20px" @click.stop.prevent="shareQuest">分配</el-button>
+                <el-button type="info" v-if="edit==1||edit==2" @click.stop.prevent="back" size="small">返回</el-button>
+                <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit==1" type="primary" size="small" style="margin-left: 20px" @click.stop.prevent="shareQuest">分配</el-button>
                 <div style="display: inline-block;margin-left: 20px">
                   <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="printObj">打印</el-button>
                 </div>
@@ -59,27 +59,27 @@
               <div style="margin-top: 40px" v-for="(item_0,index_0) in dataObject.subjList">
                 <div class="list-title" style="font-weight: bold" :id="'herf_'+index_0">{{parseInt(index_0+1)}}.{{item_0.title}}</div>
                 <ul>
-                  <li class="list-desc" style="margin-top: 16px;color: #ccc;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
+                  <li class="list-desc" style="margin-top: 16px;color: #333;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;" v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}</li>
                 </ul>
                 <div>
                   <div v-for="(item_2,index_2) in item_0.subjmxList" :key="index_2" class="li-form" style="margin-bottom: 32px">
                     <div>{{item_2.title}}</div>
                     <div class="li-forminfo" style="margin-top: 16px;">
                       <template v-if="item_2.type==3">
-                        <el-input style="width: 120px;" :disabled="(requestDataId!=''||edit==0)&&!sharePage" v-model="item_2.answer"></el-input>
+                        <el-input style="width: 120px;" :disabled="(requestDataId!=''||edit==0||edit==2)&&!sharePage" v-model="item_2.answer"></el-input>
                       </template>
                       <template v-if="item_2.type==1">
                         <el-radio-group v-model="item_2.answer">
-                          <el-radio v-for="item_3 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0)&&!sharePage" :label="item_3.id" class="mr-20">{{item_3.title}}</el-radio>
+                          <el-radio v-for="item_3 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0||edit==2)&&!sharePage" :label="item_3.id" class="mr-20">{{item_3.title}}</el-radio>
                         </el-radio-group>
                       </template>
                       <template v-if="item_2.type==2">
                         <el-checkbox-group v-model="item_2.answer">
-                          <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0)&&!sharePage" :label="item_4.id" :key="item_4.title">{{item_4.title}}</el-checkbox>
+                          <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems" :disabled="(requestDataId!=''||edit==0||edit==2)&&!sharePage" :label="item_4.id" :key="item_4.title">{{item_4.title}}</el-checkbox>
                         </el-checkbox-group>
                       </template>
                       <template v-if="item_2.type==4">
-                        <el-input style="width: 360px" type="textarea" :disabled="(requestDataId!=''||edit==0)&&!sharePage" v-model="item_2.answer"></el-input>
+                        <el-input style="width: 360px" type="textarea" :disabled="(requestDataId!=''||edit==0||edit==2)&&!sharePage" v-model="item_2.answer"></el-input>
                       </template>
                     </div>
                   </div>
@@ -96,7 +96,8 @@
         <el-button type="primary" @click="firmPwd">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px">
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px" height="80%">
+
       <el-table
         :data="dataHasAnswerList"
         border
@@ -104,10 +105,11 @@
         style="width: 100%;margin-bottom: 20px"
         size="small"
       >
+
         <el-table-column prop="percentage" header-align="center" align="center" label="完成度" >
           <template slot-scope="scope">
             <div class="less-height">
-              <el-progress type="circle" size="small" :percentage="scope.row.percentage"></el-progress>
+              <el-progress  size="small" :percentage="scope.row.percentage"></el-progress>
               </div>
           </template>
         </el-table-column>
@@ -128,16 +130,15 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange" style="margin: 15px 0;">全选</el-checkbox>
-        <el-checkbox-group v-model="choseAnswer" @change="handleCheckedCitiesChange">
-          <div style="height: 200px;overflow-y: auto;background: #F1F5F9;">
-            <el-checkbox v-for="city in dataAnswerList" :label="city.id" :key="city.id" style="display: block;height: 30px;line-height: 30px;padding-left: 10px;color: #000">{{city.sort_no}}. {{city.title}}</el-checkbox>
-          </div>
-        </el-checkbox-group>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="showDialog = false">取消</el-button>
-        <el-button type="primary" @click="fenpei">分配</el-button>
+      <div style="display: flex;justify-content: space-between;margin-bottom: 10px">
+        <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+        <el-button type="primary" size="small" @click="fenpei">分配</el-button>
       </div>
+      <el-checkbox-group v-model="choseAnswer" @change="handleCheckedCitiesChange">
+        <div style="height: 200px;overflow-y: auto;background: #F1F5F9;">
+          <el-checkbox v-for="city in dataAnswerList" :label="city.id" :key="city.id" style="display: block;height: 30px;line-height: 30px;padding-left: 10px;color: #000">{{city.sort_no}}. {{city.title}}</el-checkbox>
+        </div>
+      </el-checkbox-group>
     </el-dialog>
     <el-dialog title="设置密码" :visible.sync="showDialogNext">
       <el-radio-group v-model="switchRoles">
@@ -314,6 +315,13 @@
         })
       },
       fenpei(){
+        if(this.choseAnswer.length==0){
+          this.$message({
+            message: '请至少选中一题内容',
+            type: 'info'
+          })
+          return
+        }
         doDist({
           requestData: {
             "id": JSON.parse(localStorage.getItem('role')).id,
@@ -414,9 +422,9 @@
           res.data.forEach(item=>{
             let the_url=''
             if(item.pwd!=null){
-              the_url='请打开'+item.url+',填报第'+item.subjStr+'题的内容，查看密码为'+item.pwd
+              the_url='请打开'+window.location.href.split('?')[0]+'?share_id='+item.shareid+',填报第'+item.subjStr+'题的内容，查看密码为'+item.pwd
             }else{
-              the_url='请打开'+item.url+',填报第'+item.subjStr+'题的内容'
+              the_url='请打开'+window.location.href.split('?')[0]+'?share_id='+item.shareid+',填报第'+item.subjStr+'题的内容'
             }
             item.the_url=the_url
           })
@@ -719,13 +727,14 @@
   }
   /*去除页眉页脚*/
   @page{
+    margin-top: 0mm;
     size:  auto;   /* auto is the initial value */
-    margin: 3mm;  /* this affects the margin in the printer settings */
+    /*margin: 3mm;  !* this affects the margin in the printer settings *!*/
   }
 
   html{
     background-color: #FFFFFF;
-    margin: 0;  /* this affects the margin on the html before sending to printer */
+    /*margin: 0;  !* this affects the margin on the html before sending to printer *!*/
   }
 
   body{

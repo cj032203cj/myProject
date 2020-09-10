@@ -25,6 +25,12 @@
       border
       style="width: 100%;"
     >
+      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
+        <template slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.status==2">已提交</el-tag>
+          <el-tag type="warning" v-if="scope.row.status==1">未提交</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="org_name" header-align="center" align="center" label="医院名称" />
       <el-table-column prop="title" width="300px" header-align="center" align="center" label="调查表名称" >
         <template slot-scope="scope">
@@ -32,12 +38,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
-      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
-        <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.status==2">已提交</el-tag>
-          <el-tag type="warning" v-if="scope.row.status==1">未提交</el-tag>
-        </template>
-      </el-table-column>
+
       <el-table-column
         prop="submit_time"
         header-align="center"
@@ -96,7 +97,13 @@ export default {
     }
   },
   mounted() {
-    this.getDataList()
+    if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+      this.$router.replace({
+        path:'/AmyFill'
+      })
+    }else{
+      this.getDataList()
+    }
   },
   methods: {
     resetData(){

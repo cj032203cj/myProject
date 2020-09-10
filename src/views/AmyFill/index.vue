@@ -24,12 +24,12 @@
     >
       <el-table-column prop="title" header-align="center" align="center" label="我的调查表" />
       <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
-      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
-        <template slot-scope="scope">
-          <el-tag type="success" v-if="scope.row.status==2">已填报</el-tag>
-          <el-tag type="warning" v-if="scope.row.status==1">未填报</el-tag>
-        </template>
-      </el-table-column>
+<!--      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >-->
+<!--        <template slot-scope="scope">-->
+<!--          <el-tag type="success" v-if="scope.row.status==2">已填报</el-tag>-->
+<!--          <el-tag type="warning" v-if="scope.row.status==1">未填报</el-tag>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column
         prop="etime"
         header-align="center"
@@ -39,13 +39,14 @@
       />
       <el-table-column prop="percentage " header-align="center" align="center" label="完成度" >
         <template slot-scope="scope">
-          <el-progress :percentage="scope.row.percentage"></el-progress>
+          <el-progress :percentage="scope.row.percentage" v-if="scope.row.percentage==100"></el-progress>
+          <el-progress :percentage="scope.row.percentage" v-else :color="customColor"></el-progress>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
           <el-link type="success" size="small" v-if="scope.row.percentage!=100"  @click="addOrUpdateHandle(scope.row)">去填报</el-link>
-          <el-link type="primary" size="small" v-else  @click="addOrUpdateHandle(scope.row)">已填报</el-link>
+          <el-link type="primary" size="small" v-if="scope.row.percentage==100||scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">已填报</el-link>
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>
       </el-table-column>
@@ -70,6 +71,7 @@
     name: 'AmyFill',
     data() {
       return {
+        customColor:'#67c23a',
         dataForm: {
           title:'',
           dept_name:'',
@@ -84,7 +86,13 @@
       }
     },
     mounted() {
-      this.getDataList()
+      if(JSON.parse(localStorage.getItem('role')).role_code=='admin'){
+        this.$router.replace({
+          path:'/AdataCenter'
+        })
+      }else{
+        this.getDataList()
+      }
     },
     methods: {
       reset(){
@@ -120,7 +128,7 @@
         })
       },
       addOrUpdateHandle(data){
-        if(data.isOver){
+        if(data.isOver||data.percentage==100){
           this.$router.push(
             {
               path:'/AdataDetail',
@@ -128,6 +136,7 @@
                 "org_id": data.org_id,
                 "que_id":  data.que_id,
                 "temp_id":  data.temp_id,
+                edit:2
               }
             }
           )
