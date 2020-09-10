@@ -235,14 +235,11 @@ export default {
       this.$message({ message: '验证失败', type: 'error' })
     },
     onRefresh(){
-      console.log('点击了刷新小图标');
       this.msg = ''
     },
     onFulfilled() {
-      console.log('刷新成功啦！');
     },
     onAgain() {
-      console.log('检测到非人为操作的哦！');
       this.msg = 'try again';
       // 刷新
       this.$refs.slideblock.reset();

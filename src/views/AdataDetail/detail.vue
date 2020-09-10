@@ -579,7 +579,6 @@
           item.color = '#B5B5B5'
         })
         this.dataObject.subjList[index].color = '#2375FE'
-        console.log('#herf_'+parseInt(index+1))
         this.goAnchor('#herf_'+parseInt(index))
       }
     }

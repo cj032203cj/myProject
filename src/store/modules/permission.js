@@ -55,6 +55,7 @@ const actions = {
       } else {
         accessedRoutes = filterAsyncRoutes(asyncRoutes, roles)
       }
+
       constantRoutes.forEach((item,index)=>{
         if(item.permission!=undefined){
           if(item.permission==JSON.parse(localStorage.getItem('role')).role_code){

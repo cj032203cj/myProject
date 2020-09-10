@@ -27,9 +27,11 @@ router.beforeEach(async(to, from, next) => {
     } else {
       // determine whether the user has obtained his permission roles through getInfo
       const hasRoles = store.getters.roles && store.getters.roles.length > 0
+
       if (hasRoles) {
         next()
       } else {
+        console.log(to.path)
         // get user info
         // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
         const { roles } = await store.dispatch('user/getInfo')
@@ -47,6 +49,9 @@ router.beforeEach(async(to, from, next) => {
         // hack method to ensure that addRoutes is complete
         // set the replace: true, so the navigation will not leave a history record
         next({ ...to, replace: true })
+        if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+          next({ path: '/AmyFill' })
+        }
       }
     }
   } else {
