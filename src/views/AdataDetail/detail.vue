@@ -96,7 +96,7 @@
         <el-button type="primary" @click="firmPwd">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px">
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px" >
 
       <el-table
         :data="dataHasAnswerList"
@@ -617,7 +617,7 @@
     }
     .top-header {
       height: 80px;
-      width: 100%;
+      width: 100vw;
       position: fixed;
       z-index: 2000;
       background: #fff;
