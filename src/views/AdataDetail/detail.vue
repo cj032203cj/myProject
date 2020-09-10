@@ -96,7 +96,7 @@
         <el-button type="primary" @click="firmPwd">确认</el-button>
       </div>
     </el-dialog>
-    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px" height="80%">
+    <el-dialog title="待填报内容" :visible.sync="showDialog" width="1000px">
 
       <el-table
         :data="dataHasAnswerList"
@@ -114,13 +114,13 @@
           </template>
         </el-table-column>
         <el-table-column prop="subjStr"  header-align="center" align="center" label="已分配标题" ></el-table-column>
-        <el-table-column prop="title" header-align="center" align="center" label="分配内容" >
+        <el-table-column prop="title" header-align="center" width="400px" align="center" label="分配内容" >
           <template slot-scope="scope">
             <div>{{scope.row.the_url}}</div>
           </template>
         </el-table-column>
         <el-table-column prop="created_time" header-align="center" align="center" label="生成时间" />
-        <el-table-column prop="title" header-align="center" align="center" label="操作" >
+        <el-table-column prop="title" header-align="center" align="center" label="操作" width="180px">
           <template slot-scope="scope">
             <el-button type="text" @click="chexiao(scope.row)">撤销</el-button>
             <span class="el-dropdown-links_line"></span>
@@ -491,7 +491,12 @@
               type: 'success'
             })
             setTimeout(function () {
-              that.$router.go(-1)
+              if(that.sharePage){
+
+              }else{
+                that.$router.go(-1)
+              }
+
 
             },500)
           })
