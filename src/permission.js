@@ -47,16 +47,16 @@ router.beforeEach(async(to, from, next) => {
         // hack method to ensure that addRoutes is complete
         // set the replace: true, so the navigation will not leave a history record
         next({ ...to, replace: true })
-        if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
-          if((to.path=='/AdataCenter')||(to.path='/AtempAssign/index')||(to.path='/AtempManage/index')||(to.path='/AaccountManage/index')){
-
-            next({ path: '/AmyFill' })
-          }
-        }else if(JSON.parse(localStorage.getItem('role')).role_code=='admin'){
-          if(to.path=='/AmyFill'){
-            next({ path: '/AdataCenter' })
-          }
-        }
+        // if(JSON.parse(localStorage.getItem('role')).role_code=='user'){
+        //   if((to.path=='/AdataCenter')||(to.path='/AtempAssign/index')||(to.path='/AtempManage/index')||(to.path='/AaccountManage/index')){
+        //
+        //     next({ path: '/AmyFill' })
+        //   }
+        // }else if(JSON.parse(localStorage.getItem('role')).role_code=='admin'){
+        //   if(to.path=='/AmyFill'){
+        //     next({ path: '/AdataCenter' })
+        //   }
+        // }
       }
     }
   } else {

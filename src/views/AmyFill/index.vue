@@ -45,7 +45,7 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" width="150" label="操作">
         <template slot-scope="scope">
-          <el-link type="success" size="small" v-if="scope.row.percentage!=100"  @click="addOrUpdateHandle(scope.row)">去填报</el-link>
+          <el-link type="success" size="small" v-if="scope.row.percentage!=100&&!scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">去填报</el-link>
           <el-link type="primary" size="small" v-if="scope.row.percentage==100||scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">已填报</el-link>
           <!--<el-button type="text" size="small" @click="deleteHandle(scope.row.advId,scope.row.advTitle)">删除</el-button>-->
         </template>

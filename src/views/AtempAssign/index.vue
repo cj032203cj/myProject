@@ -213,7 +213,7 @@
         }
         doPublish({
           requestData: {
-            "etime": moment(this.form.etime).format("YYYY-MM-DD HH:MM:SS"),
+            "etime": moment(this.form.etime).format("YYYY-MM-DD HH:mm:ss"),
             "orgList": this.form.value,
             "publish_id": this.publish_id
           },
