@@ -128,25 +128,25 @@
           :data="dataHasAnswerList"
           border
           max-height="250"
-          style="width: 100%;margin-bottom: 20px"
           size="small"
+          style="width: 100%;font-size: 14px;margin-bottom: 20px"
         >
 
-          <el-table-column prop="percentage" header-align="center" align="center" label="完成度">
+          <el-table-column prop="percentage" label="完成度">
             <template slot-scope="scope">
               <div class="less-height">
                 <el-progress size="small" :percentage="scope.row.percentage"></el-progress>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="subjStr" header-align="center" align="center" label="已分配标题"></el-table-column>
-          <el-table-column prop="title" header-align="center" width="400px" align="center" label="分配内容">
+          <el-table-column prop="subjStr" label="已分配标题"></el-table-column>
+          <el-table-column prop="title" width="400px" label="分配内容">
             <template slot-scope="scope">
               <div>{{scope.row.the_url}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="created_time" header-align="center" align="center" label="生成时间"/>
-          <el-table-column prop="title" header-align="center" align="center" label="操作" width="180px">
+          <el-table-column prop="created_time" label="生成时间"/>
+          <el-table-column prop="title"  label="操作" width="180px">
             <template slot-scope="scope">
               <el-button type="text" @click="chexiao(scope.row)">撤销</el-button>
               <span class="el-dropdown-links_line"></span>

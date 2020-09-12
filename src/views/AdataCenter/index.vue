@@ -23,33 +23,30 @@
       v-loading="dataListLoading"
       :data="dataList"
       border
-      style="width: 100%;"
+      size="small"
+      style="width: 100%;font-size: 14px"
     >
-      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >
+      <el-table-column prop="status"label="填报状态" >
         <template slot-scope="scope">
           <el-tag type="success" v-if="scope.row.status==2">已提交</el-tag>
           <el-tag type="warning" v-if="scope.row.status==1">未提交</el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="org_name" header-align="center" align="center" label="医院名称" />
-      <el-table-column prop="title" width="300px" header-align="center" align="center" label="调查表名称" >
+      <el-table-column prop="org_name"  label="医院名称" />
+      <el-table-column prop="title" width="350px" label="调查表名称" >
         <template slot-scope="scope">
           <el-link @click="toDetail(scope.row)">{{scope.row.title}}</el-link>
         </template>
       </el-table-column>
-      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
+      <el-table-column prop="dept_name" label="部门" />
 
       <el-table-column
         prop="submit_time"
-        header-align="center"
-        align="center"
         width="180"
         label="提交日期"
       />
       <el-table-column
         prop="etime"
-        header-align="center"
-        align="center"
         width="180"
         label="截至日期"
       />

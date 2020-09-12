@@ -213,3 +213,7 @@ aside {
   font-size: 12px;
   background: red;
 }
+.el-table--striped .el-table__body tr.el-table__row--striped td{background:#f1f5f9 !important;
+  color: #333;}
+.el-table--enable-row-transition .el-table__body td{font-weight: bold;color: #333;}
+.el-table th.is-leaf, .el-table td{border-bottom: none !important;}

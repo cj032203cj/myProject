@@ -18,13 +18,14 @@
       v-loading="dataListLoading"
       :data="dataList"
       border
-      style="width: 100%;"
+      size="small"
+      style="width: 100%;font-size: 14px"
     >
-      <el-table-column prop="org_name" header-align="center" align="center" label="医院名称" />
-      <el-table-column prop="contact_name" header-align="center" align="center" label="联系人姓名" />
-      <el-table-column prop="phone_num" header-align="center" align="center" label="手机号" />
-      <el-table-column prop="login_name" header-align="center" align="center" label="用户名" />
-      <el-table-column header-align="center" align="center" width="150" label="操作">
+      <el-table-column prop="org_name" label="医院名称" />
+      <el-table-column prop="contact_name" label="联系人姓名" />
+      <el-table-column prop="phone_num" label="手机号" />
+      <el-table-column prop="login_name" label="用户名" />
+      <el-table-column  width="150" label="操作">
         <template slot-scope="scope">
           <el-link type="primary" size="small" @click="share(scope.row)" style="margin-right: 15px">分享</el-link>
           <el-link type="primary" size="small" @click="addOrUpdateHandle(scope.row)" style="margin-right: 15px">编辑</el-link>

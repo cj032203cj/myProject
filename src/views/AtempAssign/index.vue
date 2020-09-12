@@ -20,14 +20,21 @@
     <el-table
       v-loading="dataListLoading"
       :data="dataList"
-      border
-      style="width: 100%;"
+      size="small"
+      stripe
+      :header-cell-style="{
+        background:'#F1F5F9',
+        color:'#333',
+        height:'44px',
+      }"
+      :row-style="{height:'44px'}"
+      style="width: 100%;font-size: 14px"
     >
-      <el-table-column prop="title" header-align="center" width="400px" align="center" label="模板内容" />
-      <el-table-column prop="created_time" header-align="center" align="center" label="创建时间" />
-      <el-table-column prop="etime" header-align="center" align="center" label="截至日期" />
-      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
-      <el-table-column prop="distunm" header-align="center" align="center" label="已分配的医院(家)" >
+      <el-table-column prop="title" width="400px" label="模板内容" />
+      <el-table-column prop="created_time"  label="创建时间" />
+      <el-table-column prop="etime"  label="截至日期" />
+      <el-table-column prop="dept_name"  label="部门" />
+      <el-table-column prop="distunm" label="已分配的医院(家)" >
         <template slot-scope="scope">
           {{scope.row.distunm}}
           <el-tooltip class="item" effect="dark" :content="scope.row.contentName" placement="top-start">

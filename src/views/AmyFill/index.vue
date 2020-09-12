@@ -20,10 +20,11 @@
       v-loading="dataListLoading"
       :data="dataList"
       border
-      style="width: 100%;"
+      size="small"
+      style="width: 100%;font-size: 14px"
     >
-      <el-table-column prop="title" header-align="center" align="center" label="我的调查表" />
-      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
+      <el-table-column prop="title"  label="我的调查表" />
+      <el-table-column prop="dept_name"  label="部门" />
 <!--      <el-table-column prop="status" header-align="center" align="center" label="填报状态" >-->
 <!--        <template slot-scope="scope">-->
 <!--          <el-tag type="success" v-if="scope.row.status==2">已填报</el-tag>-->
@@ -32,18 +33,16 @@
 <!--      </el-table-column>-->
       <el-table-column
         prop="etime"
-        header-align="center"
-        align="center"
         width="180"
         label="截至日期"
       />
-      <el-table-column prop="percentage " header-align="center" align="center" label="完成度" >
+      <el-table-column prop="percentage" label="完成度" >
         <template slot-scope="scope">
           <el-progress :percentage="scope.row.percentage" v-if="scope.row.percentage==100"></el-progress>
           <el-progress :percentage="scope.row.percentage" v-else :color="customColor"></el-progress>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" width="150" label="操作">
+      <el-table-column  width="150" label="操作">
         <template slot-scope="scope">
           <el-link type="success" size="small" v-if="scope.row.percentage!=100&&!scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">去填报</el-link>
           <el-link type="primary" size="small" v-if="scope.row.percentage==100||scope.row.isOver"  @click="addOrUpdateHandle(scope.row)">已填报</el-link>

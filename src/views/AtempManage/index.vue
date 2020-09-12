@@ -20,11 +20,19 @@
       v-loading="dataListLoading"
       :data="dataList"
       border
-      style="width: 100%;"
+      size="small"
+      stripe
+      :header-cell-style="{
+        background:'#5E95E8',
+        color:'#F1F5F9',
+        height:'46px',
+        padding:'2px'
+      }"
+      style="width: 100%;font-size: 14px"
     >
-      <el-table-column prop="title" header-align="center" align="center" label="模板内容" />
-      <el-table-column prop="dept_name" header-align="center" align="center" label="部门" />
-      <el-table-column header-align="center" align="center" width="150" label="操作">
+      <el-table-column prop="title" label="模板内容" />
+      <el-table-column prop="dept_name" label="部门" />
+      <el-table-column width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="small"  @click="addOrUpdateHandle(scope.row)">查看</el-button>
         </template>
