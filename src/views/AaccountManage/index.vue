@@ -17,8 +17,14 @@
     <el-table
       v-loading="dataListLoading"
       :data="dataList"
-      border
       size="small"
+      stripe
+      :header-cell-style="{
+        background:'#F1F5F9',
+        color:'#333',
+        height:'44px',
+      }"
+      :row-style="{height:'44px'}"
       style="width: 100%;font-size: 14px"
     >
       <el-table-column prop="org_name" label="医院名称" />

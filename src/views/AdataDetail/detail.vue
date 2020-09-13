@@ -126,9 +126,15 @@
 
         <el-table
           :data="dataHasAnswerList"
-          border
           max-height="250"
           size="small"
+          stripe
+          :header-cell-style="{
+            background:'#F1F5F9',
+            color:'#333',
+            height:'44px',
+          }"
+          :row-style="{height:'44px'}"
           style="width: 100%;font-size: 14px;margin-bottom: 20px"
         >
 
@@ -155,7 +161,7 @@
                          @click="copyText(scope)">复制
               </el-button>
               <span class="el-dropdown-links_line"></span>
-              <el-button type="text" @click="setThisPwd(scope.row)">设置密码</el-button>
+              <el-button type="text" @click="setThisPwd(scope.row,1)">设置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -174,7 +180,7 @@
         </el-checkbox-group>
       </el-dialog>
       <el-dialog title="设置密码" :visible.sync="showDialogNext">
-        <el-radio-group v-model="switchRoles">
+        <el-radio-group v-model="switchRoles" @change="changeValue">
           <el-radio :label="1">
             所有人
           </el-radio>
@@ -186,8 +192,11 @@
           <el-input type="text" style="width:200px;margin-right: 20px" v-model="setPwd" placeholder="输入密码"></el-input>
           <el-button type="primary" @click="setPwdFn">保存密码</el-button>
         </div>
-
+        <div v-if="set_url">
+          <div   style="width: 496px;background: #F2F6F9;color:#616367;line-height: 32px;padding:16px;margin-top: 42px">{{set_url}}</div>
+        </div>
         <div slot="footer" class="dialog-footer">
+          <el-button @click="copyContent" v-if="set_url" class="copy-content" data-clipboard-action="copy" :data-clipboard-text="set_url" type="primary" plain>复制内容</el-button>
           <el-button @click="showDialogNext = false">关闭</el-button>
         </div>
       </el-dialog>
@@ -215,6 +224,7 @@
     name: "AdataDetail",
     data() {
       return {
+        isSetPwd:false,
         loading: true,
         printObj: {
           id: "printMe",
@@ -242,6 +252,7 @@
         dataHasAnswerList: [],
         dataObject: {},
         edit: 0,
+        set_url:'',
         needPwd: false,
         timeDiff: '',
         has_time: false,
@@ -341,6 +352,31 @@
       firmPwd() {
         this.getShareInfo()
       },
+      changeValue(value){
+        if(value==1){
+          updSharePwd({
+            "requestData": {
+              id: this.fenpei_id,
+              pwd: '',
+            }
+          }).then(res => {
+            if(!this.set_url){
+              // this.showDialogNext = false
+            }else{
+              console.log(this.set_url.split('内容，'))
+              this.set_url = this.set_url.split('内容，')[0]+'内容'
+            }
+            if(this.setPwd!=''){
+              this.$message({
+                message: '取消密码成功',
+                type: 'success'
+              })
+            }
+            this.setPwd=''
+            this.shareQuest()
+          })
+        }
+      },
       setPwdFn() {
         if (!this.setPwd) {
           this.$message({
@@ -356,12 +392,22 @@
             pwd: this.setPwd,
           }
         }).then(res => {
-          this.showDialogNext = false
-          this.$message({
-            message: res.returnMsg,
-            type: 'success'
-          })
-          this.shareQuest()
+          if(!this.set_url){
+            // this.showDialogNext = false
+            this.$message({
+              message: '保存密码成功',
+              type: 'success'
+            })
+            this.shareQuest()
+          }else{
+            this.set_url=this.set_url+'，查看密码为'+this.setPwd
+            this.$message({
+              message: '保存密码成功',
+              type: 'success'
+            })
+            this.shareQuest()
+          }
+
         })
       },
       fenpei() {
@@ -372,6 +418,7 @@
           })
           return
         }
+        this.choseAnswer=this.choseAnswer.sort()
         doDist({
           requestData: {
             "id": JSON.parse(localStorage.getItem('role')).id,
@@ -381,12 +428,9 @@
           }
         }).then(res => {
           this.shareQuest()
-          this.choseAnswer = []
-          this.$message({
-            message: res.returnMsg,
-            type: 'success'
-          })
-
+          let subjStr={subjStr:this.choseAnswer.toString()}
+          let data={...res.data,...subjStr}
+          this.setThisPwd(data,2)
         })
       },
       handleCheckAllChange(val) {
@@ -396,6 +440,17 @@
         })
         this.choseAnswer = val ? the_data : [];
         this.isIndeterminate = false;
+      },
+      copyContent(){
+        let the_class = '.copy-content'
+        let clipboard = new Clipboard(the_class);
+        clipboard.on('success', e => {
+          this.$message({type: 'success', message: '复制成功'})
+          // 释放内存
+          clipboard.off('error')
+          clipboard.off('success')
+          clipboard.destroy()
+        })
       },
       handleCheckedCitiesChange(value) {
         let checkedCount = value.length;
@@ -413,7 +468,8 @@
           clipboard.destroy()
         })
       },
-      setThisPwd(data) {
+      setThisPwd(data,type) {
+        // type是判断分配完进入的还是设置密码进入
         this.showDialogNext = true
         this.setPwd = ''
         if (data.pwd) {
@@ -421,6 +477,12 @@
           this.switchRoles = 2
         } else {
           this.switchRoles = 1
+        }
+        if(type==2){
+          this.choseAnswer=[]
+          this.set_url = '请打开' + window.location.href.split('?')[0] + '?share_id=' + data.shareid + ',填报第' + data.subjStr + '题的内容'
+        }else{
+          this.set_url=''
         }
         this.fenpei_id = data.id
       },
@@ -475,7 +537,7 @@
         }).then(res => {
           res.data.forEach(item => {
             let the_url = ''
-            if (item.pwd != null) {
+            if (item.pwd) {
               the_url = '请打开' + window.location.href.split('?')[0] + '?share_id=' + item.shareid + ',填报第' + item.subjStr + '题的内容，查看密码为' + item.pwd
             } else {
               the_url = '请打开' + window.location.href.split('?')[0] + '?share_id=' + item.shareid + ',填报第' + item.subjStr + '题的内容'
@@ -650,6 +712,18 @@
   }
 </script>
 <style lang="scss">
+  .detail .el-input__inner{
+    border-color: #000;
+  }
+  .detail .el-radio__inner{
+    border-color: #000;
+  }
+  .detail .el-checkbox__inner{
+    border-color: #000;
+  }
+  .detail .el-textarea__inner{
+    border-color: #000;
+  }
   .detail .el-loading-parent--relative{
     height: 100%;
   }
