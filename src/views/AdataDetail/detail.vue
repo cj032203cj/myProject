@@ -418,7 +418,16 @@
           })
           return
         }
-        this.choseAnswer=this.choseAnswer.sort()
+        var min;
+        for(var i=0; i<this.choseAnswer.length; i++){
+          for(var j=i; j<this.choseAnswer.length;j++){
+            if(this.choseAnswer[i]>this.choseAnswer[j]){
+              min=this.choseAnswer[j];
+              this.choseAnswer[j]=this.choseAnswer[i];
+              this.choseAnswer[i]=min;
+            }
+          }
+        }
         doDist({
           requestData: {
             "id": JSON.parse(localStorage.getItem('role')).id,
