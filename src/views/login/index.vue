@@ -73,7 +73,7 @@
       <el-form-item label="短信验证码：">
         <el-input v-model="form.pwd" class="the_input" placeholdaer="请输入短信码"></el-input>
         <span class="show-dx" @click="getPic">
-            获取
+            {{value_get}}
           </span>
       </el-form-item>
       <el-button :loading="loading" type="primary" :disabled="!can_click&&!form.pwd" class="login-btn next-btn" @click="toChange">下一步</el-button>
@@ -138,6 +138,7 @@ export default {
         psd:'',
         new_psd:'',
       },
+      value_get:'获取',
       form:{
         phone:'',
         pwd:''
@@ -158,6 +159,7 @@ export default {
       redirect: undefined,
       showDialog:false,
       otherQuery: {},
+      timer:null,
       msg: '',
       text: '向右滑',
       // 精确度小，可允许的误差范围小；为1时，则表示滑块要与凹槽完全重叠，才能验证成功。默认值为5
@@ -192,6 +194,9 @@ export default {
   destroyed() {
     // window.removeEventListener('storage', this.afterQRScan)
   },
+  beforeDestroy() {
+    clearInterval(this.timer);
+  },
   methods: {
     confirmPwd(){
       forgetPwdStep2({
@@ -223,12 +228,23 @@ export default {
       })
     },
     onSuccess(){
+      let that = this
       verificationCode({
         requestData: this.form.phone
       }).then(res => {
-        this.$message({ message: '验证通过，正在发送短信码', type: 'success' })
+        this.$message({ message: '验证通过，正在发送短信验证码', type: 'success' })
         this.can_click=true
         this.show_yzm=false
+        this.timer = setInterval(function () {
+          if(that.value_get=='获取'){
+            that.value_get=60
+          }else if(that.value_get!=0){
+            that.value_get--
+          }else if(that.value_get==0){
+            that.value_get='获取'
+            clearInterval(that.timer)
+          }
+        }, 1000);
       })
     },
     onFail(){

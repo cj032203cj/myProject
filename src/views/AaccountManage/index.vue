@@ -1,16 +1,16 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" style="display: flex;justify-content: space-between">
         <el-form-item>
           <el-form-item label="医院名称：">
             <el-input v-model="dataForm.org_name" placeholder="请输入医院名称" />
           </el-form-item>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button icon="el-icon-refresh-right" @click="reset()">重置</el-button>
-          <el-button type="primary" plain @click="addOrUpdateHandle">新增</el-button>
+          <el-button type="primary" icon="el-icon-search" @click="getDataList()" round style="margin-right: 18px">搜索</el-button>
+          <el-button icon="el-icon-refresh-right" @click="reset()" round style="margin-right: 18px">重置</el-button>
+          <el-button type="primary" plain @click="addOrUpdateHandle()" round>新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -51,7 +51,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
     />
-    <el-dialog title="新建账号" :visible.sync="dialogFormVisible" width="500px">
+    <el-dialog :title="title" :visible.sync="dialogFormVisible" width="500px">
       <el-form ref="form"  :model="form" :rules="rules" label-width="100px">
         <el-form-item label="医院名称" prop="org_name">
           <el-input v-model="form.org_name" placeholder="请输入医院名称" style="width: 300px" ></el-input>
@@ -65,7 +65,7 @@
         <el-form-item label="用户名" prop="login_name">
           <el-input v-model="form.login_name" placeholder="请输入用户名" style="width: 300px"></el-input>
         </el-form-item>
-        <el-form-item label="密码" >
+        <el-form-item label="密码" v-if="title!='编辑'">
           <div>密码默认为：qcc123456</div>
         </el-form-item>
       </el-form>
@@ -122,6 +122,7 @@ export default {
         org_name: ''
       },
       form:{},
+      title:'新增',
       dataList: [
 
       ],
@@ -188,6 +189,7 @@ export default {
     },
     addOrUpdateHandle(data) {
       if(data){
+        this.title='编辑'
         this.form={
           login_name:data.login_name,
           org_name:data.org_name,
@@ -197,8 +199,8 @@ export default {
           id:data.id,
         }
       }else{
+        this.title='新增'
         this.form={}
-
       }
       this.dialogFormVisible=true
       this.$refs.form.clearValidate();

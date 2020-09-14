@@ -78,7 +78,7 @@ export const constantRoutes = [
         path: 'AdataCenter',
         component: () => import('@/views/AdataCenter/index'),
         name: 'AdataCenter',
-        meta: {title: '数据中心', icon: 'table', noCache: true},
+        meta: {title: '中心数据', icon: 'table', noCache: true},
       }
     ]
   },

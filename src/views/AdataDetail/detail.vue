@@ -16,17 +16,17 @@
               <el-col :span="7" class="right-text">
 
 
-                <el-button type="info" v-if="edit==1||edit==2" @click.stop.prevent="back" size="small">返回</el-button>
+                <el-button type="info" v-if="edit==1||edit==2" @click.stop.prevent="back" size="small" round>返回</el-button>
                 <el-button icon="el-icon-share" v-if="!requestDataId&&!sharePage&&has_time&&edit==1" type="primary"
-                           size="small" style="margin-left: 20px" @click.stop.prevent="shareQuest">分配
+                           size="small" style="margin-left: 20px" @click.stop.prevent="shareQuest" round plain>分配
                 </el-button>
                 <div style="display: inline-block;margin-left: 20px">
-                  <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="printObj">
+                  <el-button icon="el-icon-printer" v-if="!sharePage" type="primary" size="small" v-print="printObj" round plain>
                     打印
                   </el-button>
                 </div>
                 <el-button type="primary" size="small" v-if="((!requestDataId&&edit==1)||sharePage)&&has_time"
-                           style="margin-left: 20px" @click.stop.prevent="answer">提交
+                           style="margin-left: 20px" @click.stop.prevent="answer" round>提交
                 </el-button>
               </el-col>
             </el-row>
@@ -34,7 +34,7 @@
         </div>
         <div class="grid-center">
           <el-row class="grid-center-row">
-            <el-scrollbar class="left-title" v-if="!requestDataId&&!sharePage">
+            <el-scrollbar class="left-title" v-if="!requestDataId">
               <div>{{dataObject.title}}</div>
               <div class="left-list">
                 <el-timeline style="padding-left: 2px;margin-top: 20px">
@@ -51,10 +51,10 @@
                 </el-timeline>
               </div>
             </el-scrollbar>
-            <el-col :span="8" v-if="!requestDataId&&!sharePage">
+            <el-col :span="8" v-if="!requestDataId">
               <div style="visibility: hidden">none</div>
             </el-col>
-            <el-col :span="requestDataId||sharePage?24:16" class="right-info-box">
+            <el-col :span="requestDataId?24:16" class="right-info-box">
               <div id="printMe">
                 <div>
                   <div class="grid-title"
@@ -72,7 +72,7 @@
                   </div>
                   <ul>
                     <li class="list-desc"
-                        style="margin-top: 16px;color: #333;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;"
+                        style="margin-top: 16px;color: #000;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;line-height: 28px"
                         v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}
                     </li>
                   </ul>
@@ -148,13 +148,14 @@
           <el-table-column prop="subjStr" label="已分配标题"></el-table-column>
           <el-table-column prop="title" width="400px" label="分配内容">
             <template slot-scope="scope">
-              <div>{{scope.row.the_url}}</div>
+              <div v-if="scope.row.pwd">请打开<el-link type="primary" style="display: inline">{{windowUrl}}?share_id={{scope.row.shareid}}</el-link>,填报第{{scope.row.subjStr}}题的内容,查看密码为<el-link type="primary" style="display: inline">{{scope.row.pwd}}</el-link></div>
+              <div v-else>请打开<el-link type="primary" style="display: inline">{{windowUrl}}?share_id={{scope.row.shareid}}</el-link>,填报第{{scope.row.subjStr}}题的内容</div>
             </template>
           </el-table-column>
           <el-table-column prop="created_time" label="生成时间"/>
           <el-table-column prop="title"  label="操作" width="180px">
             <template slot-scope="scope">
-              <el-button type="text" @click="chexiao(scope.row)">撤销</el-button>
+              <el-link type="danger" @click="chexiao(scope.row)">撤销</el-link>
               <span class="el-dropdown-links_line"></span>
               <el-button type="text" style="margin-left: 20px;margin-right: 20px" data-clipboard-action="copy"
                          :data-clipboard-text="scope.row.the_url" :class="'tag-copy'+scope.row.id"
@@ -179,7 +180,7 @@
           </div>
         </el-checkbox-group>
       </el-dialog>
-      <el-dialog title="设置密码" :visible.sync="showDialogNext">
+      <el-dialog title="设置密码" :visible.sync="showDialogNext" width="600px">
         <el-radio-group v-model="switchRoles" @change="changeValue">
           <el-radio :label="1">
             所有人
@@ -224,6 +225,7 @@
     name: "AdataDetail",
     data() {
       return {
+        windowUrl:window.location.href.split('?')[0],
         isSetPwd:false,
         loading: true,
         printObj: {
@@ -274,6 +276,7 @@
     mounted() {
       if (this.$route.query.share_id) {
         this.sharePage = true
+        console.log(this.sharePage)
         this.getInfoNeedPws()
       } else {
         if (this.$route.query.org_id) {
@@ -313,7 +316,7 @@
             shareid: this.$route.query.share_id
           }
         }).then(res => {
-          if (new Date(res.data.etime).getTime() < new Date().getTime()) {
+            if (new Date(res.data.etime.replace(/-/g, '/')).getTime() < new Date().getTime()) {
             this.$message({message: '该调查表已过期', type: 'info'})
           } else {
             this.needPwd = false
@@ -343,9 +346,13 @@
             }
           })
           this.dataObject = res.data
-          this.timer = setInterval(function () {
-            that.difference(that.dataObject.etime)
-          }, 1000);
+          if(res.data.etime){
+            this.timer = setInterval(function () {
+              that.difference(that.dataObject.etime)
+            }, 1000);
+          }else{
+            this.loading = false
+          }
         })
 
       },
@@ -413,7 +420,7 @@
       fenpei() {
         if (this.choseAnswer.length == 0) {
           this.$message({
-            message: '请至少选中一题内容',
+            message: '请至少选中一项题目',
             type: 'info'
           })
           return
@@ -509,8 +516,7 @@
       difference(endTime) {
         let that = this
         let dateBegin = new Date();
-        let dateEnd = new Date(endTime);
-        let dateDiff = dateEnd.getTime() - dateBegin.getTime();//时间差的毫秒数
+        let dateDiff = new Date(endTime.replace(/-/g, '/')).getTime() - dateBegin.getTime();//时间差的毫秒数
         if (dateDiff > 0) {
           this.has_time = true
           if (this.loading == true) {
@@ -664,9 +670,14 @@
               }
             })
             this.dataObject = res.data
-            this.timer = setInterval(function () {
-              that.difference(that.dataObject.etime)
-            }, 1000);
+            if(res.data.etime){
+              this.timer = setInterval(function () {
+                that.difference(that.dataObject.etime)
+              }, 1000);
+            }else{
+              this.loading = false
+            }
+
           })
         } else {
           questPreview({
@@ -697,9 +708,13 @@
               }
             })
             this.dataObject = res.data
-            this.timer = setInterval(function () {
-              that.difference(that.dataObject.etime)
-            }, 1000);
+            if(res.data.etime){
+              this.timer = setInterval(function () {
+                that.difference(that.dataObject.etime)
+              }, 1000);
+            }else{
+              this.loading = false
+            }
           })
         }
       },
@@ -746,6 +761,9 @@
 
   .less-height .el-progress__text {
     font-size: 12px !important;
+  }
+  .el-table--enable-row-transition .el-table__body td{
+    font-weight: normal;
   }
 </style>
 <style scoped lang="scss">

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" style="display: flex;justify-content: space-between">
         <el-form-item>
           <el-form-item label="模板内容：">
             <el-input v-model="dataForm.title" placeholder="模板内容" />
@@ -11,9 +11,9 @@
           </el-form-item>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
-          <el-button type="primary" plain @click="addOrUpdateHandle_new">新增</el-button>
+          <el-button icon="el-icon-search" @click="getDataList()" type="primary" round style="margin-right: 18px">搜索</el-button>
+          <el-button  icon="el-icon-refresh-right" @click="reset()" round style="margin-right: 18px">重置</el-button>
+          <el-button type="primary" plain @click="addOrUpdateHandle_new" round>新增</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -82,7 +82,7 @@
             <el-option v-for="item in tempList" :key="item.id" :label="item.title" :value="item.id" />
           </el-select>
         </el-form-item>
-        <el-form-item label="截止时间：" prop="eTime">
+        <el-form-item label="截止时间：" prop="etime">
           <el-date-picker
             :picker-options='pickerBeginDateBefore'
             v-model="form_new.etime"
@@ -197,7 +197,6 @@
           this.$message('截止时间必须大于当前时间')
           return false
         }
-        debugger
         addTem({
           requestData: {
             "etime": moment(this.form_new.etime).format("YYYY-MM-DD HH:mm:ss"),
@@ -239,7 +238,7 @@
       },
       addOrUpdateHandle(data){
         this.form={
-          etime:data.etime?new Date(data.etime):'',
+          etime:data.etime?new Date(data.etime.replace(/-/g, '/')):'',
           value: []
         }
         this.publish_id = data.id
@@ -296,7 +295,7 @@
           },
         }).then(res => {
           res.data.pageData.forEach(item=>{
-              if(new Date(item.etime).getTime()<new Date().getTime()){
+              if(new Date(item.etime.replace(/-/g, '/')).getTime()<new Date().getTime()){
                 item.isOver=true
               }else{
                 item.isOver=false

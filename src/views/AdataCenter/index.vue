@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" style="display: flex;justify-content: space-between">
         <el-form-item>
           <el-form-item label="医院名称：">
             <el-input v-model="dataForm.org_name" placeholder="请输入医院名称" />
@@ -14,8 +14,8 @@
           </el-form-item>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="resetData()">重置</el-button>
+          <el-button icon="el-icon-search" type="primary" @click="getDataList()" round  style="margin-right: 18px">搜索</el-button>
+          <el-button  icon="el-icon-refresh-right" @click="resetData()" round>重置</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -130,13 +130,7 @@ export default {
          pageSize: this.pageSize,
         },
     }).then(res => {
-        res.data.pageData.forEach(item=>{
-          if(new Date(item.etime).getTime()<new Date().getTime()){
-            item.isOver=true
-          }else{
-            item.isOver=false
-          }
-        })
+
         this.dataList=res.data.pageData
         this.totalPage=res.data.totalSize
       })

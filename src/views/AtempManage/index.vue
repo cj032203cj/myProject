@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()"  style="display: flex;justify-content: space-between">
         <el-form-item>
           <el-form-item label="模板内容：">
             <el-input v-model="dataForm.title" placeholder="模板内容" />
@@ -11,8 +11,8 @@
           </el-form-item>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-          <el-button type="primary" icon="el-icon-refresh-right" @click="reset()">重置</el-button>
+          <el-button icon="el-icon-search" type="primary"  @click="getDataList()" round style="margin-right: 18px">搜索</el-button>
+          <el-button icon="el-icon-refresh-right" @click="reset()" round>重置</el-button>
         </el-form-item>
       </el-form>
     </div>
