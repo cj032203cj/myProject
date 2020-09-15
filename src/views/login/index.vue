@@ -146,8 +146,8 @@ export default {
       isLogin:true,
       imgArray:[img0,img1,img2,img4,img3,img5],
       loginForm: {
-        username: 'admin',
-        password: 'admin'
+        username: '',
+        password: ''
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '请输入用戶名' }],
@@ -232,20 +232,20 @@ export default {
       verificationCode({
         requestData: this.form.phone
       }).then(res => {
-        this.$message({ message: '验证通过，正在发送短信验证码', type: 'success' })
-        this.can_click=true
-        this.show_yzm=false
-        this.timer = setInterval(function () {
-          if(that.value_get=='获取'){
-            that.value_get=60
-          }else if(that.value_get!=0){
-            that.value_get--
-          }else if(that.value_get==0){
-            that.value_get='获取'
-            clearInterval(that.timer)
-          }
-        }, 1000);
       })
+      this.$message({ message: '验证通过，正在发送短信验证码', type: 'success' })
+      this.can_click=true
+      this.show_yzm=false
+      this.timer = setInterval(function () {
+        if(that.value_get=='获取'){
+          that.value_get=60
+        }else if(that.value_get!=0){
+          that.value_get--
+        }else if(that.value_get==0){
+          that.value_get='获取'
+          clearInterval(that.timer)
+        }
+      }, 1000);
     },
     onFail(){
       this.$message({ message: '验证失败', type: 'error' })

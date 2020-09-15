@@ -72,7 +72,7 @@
                   </div>
                   <ul>
                     <li class="list-desc"
-                        style="margin-top: 16px;color: #000;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;line-height: 28px"
+                        style="margin-top: 16px;color: #656565;font-size: 16px;text-indent: 18px;margin-bottom: 20px;list-style-type: disc;line-height: 28px"
                         v-for="(item_1,index_1) in item_0.desc" :key="item_1">{{item_1}}
                     </li>
                   </ul>
@@ -87,7 +87,7 @@
                                     v-model="item_2.answer"></el-input>
                         </template>
                         <template v-if="item_2.type==1">
-                          <el-radio-group v-model="item_2.answer">
+                          <el-radio-group v-model="item_2.answer" style="margin-left: 10px">
                             <el-radio v-for="item_3 in item_2.subjItems"
                                       :disabled="((requestDataId!=''||edit==0||edit==2)&&!sharePage)||!has_time"
                                       :label="item_3.id" class="mr-20">{{item_3.title}}
@@ -97,7 +97,7 @@
                         <template v-if="item_2.type==2">
                           <el-checkbox-group v-model="item_2.answer">
                             <el-checkbox style="display: block;margin-bottom: 20px" v-for="item_4 in item_2.subjItems"
-                                         :disabled="((requestDataId!=''||edit==0||edit==2)||sharePage)&&!has_time"
+                                         :disabled="((requestDataId!=''||edit==0||edit==2)&&!sharePage)||!has_time"
                                          :label="item_4.id" :key="item_4.title">{{item_4.title}}
                             </el-checkbox>
                           </el-checkbox-group>
@@ -276,7 +276,6 @@
     mounted() {
       if (this.$route.query.share_id) {
         this.sharePage = true
-        console.log(this.sharePage)
         this.getInfoNeedPws()
       } else {
         if (this.$route.query.org_id) {
@@ -300,7 +299,7 @@
         questShareinfo({
           "requestData": this.$route.query.share_id
         }).then(res => {
-          if (res.data.pwd != null) {
+          if (res.data.pwd != null&&res.data.pwd!='') {
             this.loading=false
             this.needPwd = true
           } else {
@@ -370,8 +369,9 @@
             if(!this.set_url){
               // this.showDialogNext = false
             }else{
-              console.log(this.set_url.split('内容，'))
-              this.set_url = this.set_url.split('内容，')[0]+'内容'
+              if(this.set_url.split('内容，').length>1){
+                this.set_url = this.set_url.split('内容，')[0]+'内容'
+              }
             }
             if(this.setPwd!=''){
               this.$message({
@@ -736,17 +736,32 @@
   }
 </script>
 <style lang="scss">
-  .detail .el-input__inner{
-    border-color: #000;
+  .el-radio__input.is-disabled.is-checked .el-radio__original{
+    z-index:100;
+    opacity: 1;
+    left: -10px;
+    top: -8px;
   }
-  .detail .el-radio__inner{
-    border-color: #000;
+  .el-radio__input.is-disabled.is-checked .el-radio__inner {
+   display: none;
   }
-  .detail .el-checkbox__inner{
-    border-color: #000;
+  .el-checkbox__input.is-disabled.is-checked .el-checkbox__original{
+
+    z-index:100;
+    opacity: 1;
+    left: -10px;
+    width: 14px;
+    height: 14px;
+    top: -8px;
   }
-  .detail .el-textarea__inner{
-    border-color: #000;
+  .el-checkbox__input.is-disabled.is-checked{
+    margin-left: 10px;
+  }
+  .el-checkbox.is-disabled.is-checked .el-checkbox__label{
+    margin-left: 4px;
+  }
+  .el-checkbox__input.is-disabled.is-checked .el-checkbox__inner {
+    display: none;
   }
   .detail .el-loading-parent--relative{
     height: 100%;
