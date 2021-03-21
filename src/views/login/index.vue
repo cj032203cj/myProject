@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    1
+    123
     <div class="login-left"></div>
     <div class="company-center">
       <div>医疗服务质控中心系统</div>
