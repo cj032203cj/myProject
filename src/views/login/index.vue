@@ -233,6 +233,7 @@ export default {
         requestData: this.form.phone
       }).then(res => {
       })
+
       this.$message({ message: '验证通过，正在发送短信验证码', type: 'success' })
       this.can_click=true
       this.show_yzm=false
